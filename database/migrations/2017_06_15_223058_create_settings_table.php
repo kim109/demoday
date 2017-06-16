@@ -16,8 +16,8 @@ class CreateSettingsTable extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->increments('id');
             $table->enum('state', ['ready', 'open', 'close'])->default('ready')->comment('진행 상태');
-            $table->unsignedSmallInteger('coin')->comment('개일별 지급 J-COIN');
-            $table->unsignedInteger('investment')->comment('실제 투자액');
+            $table->unsignedSmallInteger('supply')->comment('개일별 지급 J-COIN');
+            $table->unsignedInteger('capital')->comment('실제 투자액');
             $table->timestamps();
         });
     }
