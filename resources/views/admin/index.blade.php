@@ -35,6 +35,39 @@
                 </div>
             </div>
         </nav>
+
+        <h4>모의 투자 환경 설정</h4>
+
+        <div class="form-horizontal" id="setting">
+            <div class="form-group">
+                <label for="supply" class="col-sm-2 control-label">개인별 지급 J-Coin</label>
+                <div class="col-sm-8">
+                    <input type="number" class="form-control" step="10" min="0" max="255" placeholder="개인별 지급 J-Coin" v-model="supply">
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-default" v-on:click="saveSupply">저장</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="capital" class="col-sm-2 control-label">실제 투자액 설정</label>
+                <div class="col-sm-8">
+                    <input type="number" class="form-control" step="1000" min="0" max="100000000" placeholder="실제 투자액" v-model="capital">
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-default" v-on:click="saveCapital">저장</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="capital" class="col-sm-2 control-label">모의투자 Open</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="capital" placeholder="실제 투자액">
+                </div>
+            </div>
+        </div>
+
+        <hr>
     </div>
+
+    <script type="text/javascript" src="{{ mix('js/admin.js') }}"></script>
 </body>
 </html>

@@ -15,4 +15,12 @@ class AdminController extends Controller
 
         return view('admin.index', ['settings' => $settings]);
     }
+
+    public function getSetting(Request $request)
+    {
+        $settings = Setting::find(1)
+                    ->first(['state', 'supply', 'capital']);
+
+        return response()->json($settings);
+    }
 }
