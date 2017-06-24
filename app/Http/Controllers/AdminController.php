@@ -18,9 +18,29 @@ class AdminController extends Controller
 
     public function getSetting(Request $request)
     {
-        $settings = Setting::find(1)
-                    ->first(['state', 'supply', 'capital']);
+        $settings = Setting::find(1, ['state', 'supply', 'capital']);
 
         return response()->json($settings);
+    }
+
+    public function setSetting(Request $request)
+    {
+        $this->validate($request, [
+            'supply' => 'integer|min:1',
+            'capital' => 'integer|min:1'
+        ]);
+
+        $setting = Setting::find(1);
+
+        if ($request->has('supply')) {
+            $setting->supply = $request->input('supply');
+        }
+        if ($request->has('capital')) {
+            $setting->capital = $request->input('capital');
+        }
+
+        $setting->save();
+
+        return response()->json(['result' => 'success']);
     }
 }

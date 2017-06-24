@@ -1,3 +1,7 @@
+window.$ = require('jquery');
+require('bootstrap-switch');
+$.fn.bootstrapSwitch.defaults.size = 'small';
+
 window.Vue = require('vue');
 
 window.axios = require('axios');
@@ -25,22 +29,26 @@ var setting = new Vue({
             .catch((error) => {
                 console.log(error);
             });
-    },
-    computed: {
-        isDisabled() {
-            // evaluate whatever you need to determine disabled here...
-            return this.form.validated;
-        }
+        $("[name='my-checkbox']").bootstrapSwitch();
     },
     methods: {
         saveSupply: function (event) {
             let self = this;
             axios.patch('admin/setting', {
                 'supply': self.supply
+            })
+            .catch((error) => {
+                console.log(error);
             });
         },
         saveCapital: function (event) {
-            console.log(this.capital);
+            let self = this;
+            axios.patch('admin/setting', {
+                'capital': self.capital
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         }
     }
 });

@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label for="capital" class="col-sm-2 control-label">모의투자 Open</label>
                 <div class="col-sm-10">
-                    <input type="number" class="form-control" id="capital" placeholder="실제 투자액">
+                    <input type="checkbox" name="my-checkbox" checked>
                 </div>
             </div>
         </div>
