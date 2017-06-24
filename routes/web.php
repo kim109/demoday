@@ -24,4 +24,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/', 'AdminController@index');
     Route::get('setting', 'AdminController@getSetting');
     Route::patch('setting', 'AdminController@setSetting');
+
+    Route::post('items', 'AdminController@storeItem');
+    Route::get('items/{id}', 'AdminController@getItem');
+    Route::patch('items/{id}', 'AdminController@editItem');
+    Route::delete('items/{id}', 'AdminController@removeItem');
 });

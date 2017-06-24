@@ -18,13 +18,19 @@ class AdminController extends Controller
 
     public function getSetting(Request $request)
     {
-        $settings = Setting::find(1, ['state', 'supply', 'capital']);
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital']);
 
         return response()->json($settings);
     }
 
     public function setSetting(Request $request)
     {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
         $this->validate($request, [
             'supply' => 'integer|min:1',
             'capital' => 'integer|min:1'
@@ -40,6 +46,75 @@ class AdminController extends Controller
         }
 
         $setting->save();
+
+        return response()->json(['result' => 'success']);
+    }
+
+    public function getItem($id, Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+        $item = Item::find($id, ['title', 'company', 'speaker', 'description']);
+        if ($item == null) {
+            return response()->json(['error' => 'item not found'], 404);
+        }
+
+        return response()->json($item);
+    }
+
+    public function storeItem(Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+        $this->validate($request, [
+            'title' => 'required',
+            'company' => 'required',
+            'speaker' => 'required',
+            'description' => 'required',
+        ]);
+
+        $item = new Item;
+        $item->title = $request->input('title');
+        $item->company = $request->input('company');
+        $item->speaker = $request->input('speaker');
+        $item->description = $request->input('description');
+        $item->save();
+
+        return response()->json(['result' => 'success', 'id' => $item->id], 201);
+    }
+
+    public function editItem($id, Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+        $this->validate($request, [
+            'title' => 'required',
+            'company' => 'required',
+            'speaker' => 'required',
+            'description' => 'required',
+        ]);
+
+        $item = Item::find($id);
+        $item->title = $request->input('title');
+        $item->company = $request->input('company');
+        $item->speaker = $request->input('speaker');
+        $item->description = $request->input('description');
+        $item->save();
+
+        return response()->json(['result' => 'success']);
+    }
+
+    public function removeItem($id, Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+
+        $item = Item::find($id);
+        $item->delete();
 
         return response()->json(['result' => 'success']);
     }

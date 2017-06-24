@@ -17,6 +17,6 @@ const { mix } = require('laravel-mix');
 mix.js('resources/assets/js/admin.js', 'public/js')
    .less('resources/assets/less/admin.less', 'public/css');
 
-if (mix.config.inProduction) {
+if (mix.inProduction()) {
     mix.version();
 }
