@@ -25,6 +25,7 @@ var setting = new Vue({
     data: {
         supply: null,
         capital: null,
+        items: null,
         item: {
             title: null,
             company: null,
@@ -37,11 +38,11 @@ var setting = new Vue({
             .then((response) => {
                 this.supply = response.data.supply;
                 this.capital = response.data.capital;
+                this.items = response.data.items;
             })
             .catch((error) => {
                 console.log(error);
             });
-
     },
     methods: {
         saveSupply: function (event) {
@@ -70,10 +71,15 @@ var setting = new Vue({
                 self.item.company = null;
                 self.item.speaker = null;
                 self.item.description = null;
+
+                self.items.push(response.data.item);
             })
             .catch((error) => {
                 console.log(error);
             });
+        },
+        removeItem: function (index) {
+            this.items.splice(index, 1);
         }
     }
 });

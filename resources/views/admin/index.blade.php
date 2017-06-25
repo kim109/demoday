@@ -68,7 +68,7 @@
          <hr>
 
          <div class="row">
-            <item id="2"></item>
+            <item v-for="(item, index) in items" :item="item" :index="index" v-on:remove="removeItem(index)"></item>
 
             <div class="col-sm-6">
                 <div class="panel panel-primary">
@@ -77,30 +77,30 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">발표 제목</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="발표 제목" v-model="item.title">
+                                <input type="text" class="form-control input-sm" placeholder="발표 제목" v-model="item.title">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">발표자 회사</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="발표자 회사" v-model="item.company">
+                                <input type="text" class="form-control input-sm" placeholder="발표자 회사" v-model="item.company">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">발표자 이름</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="발표자 이름" v-model="item.speaker">
+                                <input type="text" class="form-control input-sm" placeholder="발표자 이름" v-model="item.speaker">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">발표 내용 요약</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control" v-model="item.description"></textarea>
+                                <textarea class="form-control input-sm" v-model="item.description"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="panel-footer text-right">
-                        <button class="btn btn-success" v-on:click="storeItem">등록</button>
+                        <button class="btn btn-sm btn-success" v-on:click="storeItem">등록</button>
                     </div>
                 </div>
             </div>

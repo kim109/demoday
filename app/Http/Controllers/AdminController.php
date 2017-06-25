@@ -22,8 +22,11 @@ class AdminController extends Controller
             return reponse()->json(['error' => 'invalid connection'], 406);
         }
         $settings = Setting::findOrFail(1, ['state', 'supply', 'capital']);
+        $repsonse = $settings->toArray();
+        $items = Item::all(['id', 'title', 'company', 'speaker', 'description']);
+        $repsonse['items'] = $items->toArray();
 
-        return response()->json($settings);
+        return response()->json($repsonse);
     }
 
     public function setSetting(Request $request)
@@ -82,7 +85,7 @@ class AdminController extends Controller
         $item->description = $request->input('description');
         $item->save();
 
-        return response()->json(['result' => 'success', 'id' => $item->id], 201);
+        return response()->json(['result' => 'success', 'item' => $item], 201);
     }
 
     public function editItem($id, Request $request)
