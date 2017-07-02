@@ -1,4 +1,11 @@
-@extends('layouts.app')
+@extends('layout')
+
+@push('stylesheets')
+
+@endpush
+
+@push('scripts')
+@endpush
 
 @section('content')
 <div class="container">

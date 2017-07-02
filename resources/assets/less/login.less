@@ -1,0 +1,35 @@
+// Bootstrap
+@import "~bootstrap/less/bootstrap";
+@import "variables";
+@import "bootswatch";
+
+body { background-color : #444; }
+
+.login {
+    margin-top: 5vh;
+
+    .form-signin {
+        max-width: 330px;
+        padding: 20px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 3px;
+
+        img.ci {
+            margin: 0 auto;
+            max-width: 50%;
+        }
+
+        input.top {
+            margin-bottom: -1px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        input.bottom {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin-bottom: 10px;
+        }
+
+    }
+}
