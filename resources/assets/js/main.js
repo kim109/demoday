@@ -13,10 +13,13 @@ if (token) {
 
 Vue.use(VueOnsen);
 
+var selected = null;
+
 const list = {
     template: '#list',
     methods: {
-        view() {
+        view(item) {
+            selected = item;
             this.pageStack.push(view);
         }
     },
@@ -42,7 +45,21 @@ const list = {
 
 const view = {
     template: '#view',
-    props: ['pageStack', 'item']
+    data: function() {
+        return {
+            coin: null,
+            item : selected
+        }
+    },
+    methods: {
+        test() {
+            console.log(id);
+        }
+    },
+    beforeMount: function () {
+        console.log('##');
+    },
+    props: ['pageStack']
 };
 
 var vm = new Vue({
@@ -51,7 +68,6 @@ var vm = new Vue({
     data() {
         return {
             pageStack: [list],
-
         };
     },
     methods: {

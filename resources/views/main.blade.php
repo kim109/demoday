@@ -9,7 +9,7 @@
 <body>
   <template id="main">
     <v-ons-navigator :page-stack="pageStack" @prepush="test">
-      <component :is="page" v-for="page in pageStack" :page-stack="pageStack"></component>
+      <component :is="page" v-for="(page, index) in pageStack" v-bind:key="index" :page-stack="pageStack"></component>
     </v-ons-navigator>
   </template>
 
@@ -25,8 +25,8 @@
       </v-ons-toolbar>
 
       <v-ons-list>
-        <v-ons-list-header>Default @{{ coin }}</v-ons-list-header>
-        <v-ons-list-item v-for="item in items" modifier="chevron" @click="view" tappable>
+        <v-ons-list-header>지급된 Coin : @{{ coin }}</v-ons-list-header>
+        <v-ons-list-item v-for="(item, index) in items" v-bind:key="index" modifier="chevron" @click="view(item)" tappable>
           <span class="list-item__title">@{{ item.title }}</span>
           <span class="list-item__subtitle">투자금 : </span>
         </v-ons-list-item>
@@ -40,15 +40,29 @@
     </v-ons-page>
   </template>
 
-  <template id="view" :item="item">
+  <template id="view">
     <v-ons-page>
       <v-ons-toolbar>
         <div class="left">
-          <v-ons-back-button>리스트</v-ons-back-button>
+          <v-ons-back-button>Back</v-ons-back-button>
         </div>
-        <div class="center">123</div>
+        <div class="center">@{{ item.title }}</div>
       </v-ons-toolbar>
-      <p style="text-align: center">This is the second page</p>
+      <v-ons-card>
+        <div class="content">제목</div>
+        <div class="title">@{{ item.title }}</div>
+        <div class="content">회사</div>
+        <div class="title">@{{ item.company }}</div>
+        <div class="content">발표자</div>
+        <div class="title">@{{ item.speaker }}</div>
+        <div class="content">내용 요약</div>
+        <div class="title">@{{ item.description }}</div>
+      </v-on-card>
+      <v-ons-bottom-toolbar>
+        <v-ons-button @click="test">
+          Test!
+        </v-ons-button>
+      </v-ons-bottom-toolbar>
     </v-ons-page>
   </template>
 
