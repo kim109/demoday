@@ -15,8 +15,10 @@ const { mix } = require('laravel-mix');
 //    .sass('resources/assets/sass/app.scss', 'public/css');
 
 mix.js('resources/assets/js/admin.js', 'public/js')
+    .js('resources/assets/js/main.js', 'public/js')
    .less('resources/assets/less/admin.less', 'public/css')
-   .less('resources/assets/less/login.less', 'public/css');
+   .less('resources/assets/less/login.less', 'public/css')
+   .less('resources/assets/less/main.less', 'public/css');
 
 if (mix.inProduction()) {
     mix.version();
