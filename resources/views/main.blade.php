@@ -25,10 +25,10 @@
       </v-ons-toolbar>
 
       <v-ons-list>
-        <v-ons-list-header>지급된 Coin : @{{ coin }}</v-ons-list-header>
+        <v-ons-list-header>지급된 Coin : @{{ coin }} / 잔여 Coin: @{{ balance }}</v-ons-list-header>
         <v-ons-list-item v-for="(item, index) in items" v-bind:key="index" modifier="chevron" @click="view(item)" tappable>
           <span class="list-item__title">@{{ item.title }}</span>
-          <span class="list-item__subtitle">투자금 : @{{ item.investment }} (@{{ item.investment/coin*100 }}%)</span>
+          <span class="list-item__subtitle">투자금 : @{{ item.investment }} (@{{ (item.investment/coin*100).toFixed(2) }}%)</span>
         </v-ons-list-item>
       </v-ons-list>
 
