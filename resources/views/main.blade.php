@@ -28,7 +28,7 @@
         <v-ons-list-header>지급된 Coin : @{{ coin }}</v-ons-list-header>
         <v-ons-list-item v-for="(item, index) in items" v-bind:key="index" modifier="chevron" @click="view(item)" tappable>
           <span class="list-item__title">@{{ item.title }}</span>
-          <span class="list-item__subtitle">투자금 : </span>
+          <span class="list-item__subtitle">투자금 : @{{ item.investment }} (@{{ item.investment/coin*100 }}%)</span>
         </v-ons-list-item>
       </v-ons-list>
 
@@ -48,21 +48,26 @@
         </div>
         <div class="center">@{{ item.title }}</div>
       </v-ons-toolbar>
+
       <v-ons-card>
-        <div class="content">제목</div>
         <div class="title">@{{ item.title }}</div>
-        <div class="content">회사</div>
-        <div class="title">@{{ item.company }}</div>
-        <div class="content">발표자</div>
-        <div class="title">@{{ item.speaker }}</div>
-        <div class="content">내용 요약</div>
-        <div class="title">@{{ item.description }}</div>
-      </v-on-card>
-      <v-ons-bottom-toolbar>
-        <v-ons-button @click="test">
-          Test!
-        </v-ons-button>
-      </v-ons-bottom-toolbar>
+        <div class="content">
+          <p>회사 : @{{ item.company }}</p>
+          <p>발표자 : @{{ item.speaker }}</p>
+          <p>내용 요약</p>
+          <p v-html="item.description"></p>
+        </div>
+      </v-ons-card>
+
+      <v-ons-card>
+        <div class="content" style="text-align: center">
+          <button @click="minus"><v-ons-icon icon="ion-minus-round"></v-ons-icon></button>
+          <input style="text-align: center;padding: 2px 0" type="number" id="investment" min="1" max="99"  v-model="investment">
+          <button @click="plus"><v-ons-icon icon="ion-plus-round"></v-ons-icon></button>
+
+          <v-ons-button modifier="large" style="margin: 6px 0" @click="save">저 장</v-ons-button>
+        </div>
+      </v-ons-card>
     </v-ons-page>
   </template>
 

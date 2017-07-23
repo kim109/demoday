@@ -30,7 +30,6 @@ const list = {
         }
     },
     beforeMount: function () {
-        // `this` 는 vm 인스턴스를 가리킵니다.
         axios.get('main/items')
             .then((response) => {
                 this.coin = response.data.coin;
@@ -47,16 +46,37 @@ const view = {
     template: '#view',
     data: function() {
         return {
-            coin: null,
+            investment: 0,
             item : selected
         }
     },
     methods: {
-        test() {
-            console.log(id);
+        minus() {
+            if(this.investment <= 1) {
+                alert('최소 투자금은 1 입니다.');
+            } else {
+               this.investment--;
+            }
+        },
+        plus() {
+            if(this.investment >= 99) {
+                alert('최대 투자금은 99 입니다.');
+            } else {
+               this.investment++;
+            }
+        },
+        save() {
+            axios.post('main/investment', {'item':this.item.id, 'investment': this.investment})
+                .then((response) => {
+                    this.item.investment = this.investment;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
     },
     beforeMount: function () {
+        this.investment = selected.investment;
         console.log('##');
     },
     props: ['pageStack']
