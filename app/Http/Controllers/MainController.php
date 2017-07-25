@@ -57,7 +57,7 @@ class MainController extends Controller
             'investment.required' => '투자금을 입력하세요.',
             'investment.integer' => '투자금은 숫자로 입력하세요.',
             'investment.min' => '투자금은 최소 1 이상으로 입력하세요.',
-            'investment.max' => '투자금은 최소 99 이상으로 입력하세요.'
+            'investment.max' => '투자금은 최소 99 이하로 입력하세요.'
         ]);
 
         $user = Auth::user();
@@ -69,7 +69,7 @@ class MainController extends Controller
         ])->sum('investment');
 
         if ($settting->supply < $consume + $request->input('investment')) {
-            return response()->json(['investment'=> ['총 투자액 이상으로 투자하실 수 없습니다.']], 422);
+            return response()->json(['errors'=> ['총 투자액 이상으로 투자하실 수 없습니다.']], 422);
         }
 
         Fund::updateOrCreate(

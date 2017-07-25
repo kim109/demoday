@@ -16,19 +16,22 @@ Vue.use(VueOnsen);
 
 var selected = null;
 
+const store = {
+    coin: null,
+    items : null,
+    selected: null
+}
+
 const list = {
     template: '#list',
     methods: {
         view(item) {
-            selected = item;
+            store.selected = item;
             this.pageStack.push(view);
         }
     },
     data: function() {
-        return {
-            coin: null,
-            items : null
-        }
+        return store;
     },
     computed: {
         balance: function() {
@@ -59,13 +62,25 @@ const view = {
     data: function() {
         return {
             investment: 0,
-            item : selected
+            item : store.selected
+        }
+    },
+    computed: {
+        balance: function() {
+            let consume = 0;
+            store.items.forEach((item) => {
+                if (item != this.item) {
+                    consume += parseInt(item.investment);
+                }
+            });
+            return store.coin-consume-this.investment;
         }
     },
     methods: {
         minus() {
             if(this.investment <= 1) {
                 ons.notification.alert('최소 투자금은 1 입니다.');
+                this.investment = 1;
             } else {
                this.investment--;
             }
@@ -73,6 +88,7 @@ const view = {
         plus() {
             if(this.investment >= 99) {
                 ons.notification.alert('최대 투자금은 99 입니다.');
+                this.investment = 99;
             } else {
                this.investment++;
             }
@@ -85,7 +101,7 @@ const view = {
                     if (index == 1) {
                         axios.post('main/investment', {'item':this.item.id, 'investment': this.investment})
                         .then((response) => {
-                            this.item.investment = this.investment;
+                            store.selected.investment = this.investment;
                             ons.notification.toast({
                                 message: '투자금이 설정되었습니다.',
                                 timeout: 1500
@@ -93,8 +109,11 @@ const view = {
                         })
                         .catch((error) => {
                             if (error.response) {
-                                ons.notification.alert('aaa');
-                                console.log(error.response.data);
+                                if (error.response.data.errors) {
+                                    ons.notification.alert(error.response.data.errors.join('<br>'));
+                                } else {
+                                    console.log(error.response.data);
+                                }
                             } else if (error.request) {
                                 console.log(error.request);
                             } else {
@@ -104,11 +123,10 @@ const view = {
                     }
                 }
             });
-
         }
     },
     beforeMount: function () {
-        this.investment = selected.investment;
+        this.investment = store.selected.investment;
         // console.log('##');
     },
     props: ['pageStack']
