@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        DB::table('settings')->insert([
+            'supply' => 100,
+            'capital' => 10000000
+        ]);
     }
 }

@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('name');
             $table->string('title')->comment('직급');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
