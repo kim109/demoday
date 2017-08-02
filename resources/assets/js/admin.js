@@ -1,6 +1,3 @@
-window.$ = window.jQuery = require('jquery');
-require('bootstrap');
-
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
@@ -15,16 +12,14 @@ window.Vue = require('vue');
 
 Vue.component('item', require('./components/Item.vue'));
 
-require('bootstrap-switch');
-$.fn.bootstrapSwitch.defaults.size = 'small';
-
-$("[name='my-checkbox']").bootstrapSwitch();
-
 var setting = new Vue({
     el: '#admin',
     data: {
         supply: null,
         capital: null,
+        experts: null,
+        multiple: null,
+        state: null,
         items: null,
         item: {
             title: null,
@@ -33,11 +28,19 @@ var setting = new Vue({
             description: null
         }
     },
+    computed: {
+        notReady: function () {
+            return this.state != 'ready';
+        }
+    },
     created: function () {
         axios.get('admin/setting')
             .then((response) => {
                 this.supply = response.data.supply;
                 this.capital = response.data.capital;
+                this.experts = response.data.experts;
+                this.multiple = response.data.multiple;
+                this.state = response.data.state;
                 this.items = response.data.items;
             })
             .catch((error) => {
@@ -45,23 +48,26 @@ var setting = new Vue({
             });
     },
     methods: {
-        saveSupply: function (event) {
-            let self = this;
-            axios.patch('admin/setting', {
-                'supply': self.supply
-            })
+        saveSetting: function (type) {
+            let param = {};
+            param[type] = this[type];
+
+            axios.patch('admin/setting', param)
             .catch((error) => {
                 console.log(error);
             });
         },
-        saveCapital: function (event) {
+        saveState: function (event) {
+            let value = document.getElementById("state").value;
             let self = this;
-            axios.patch('admin/setting', {
-                'capital': self.capital
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+
+            axios.patch('admin/setting', {'state': value})
+                .then((response) => {
+                    self.state = value;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
         storeItem: function (event) {
             let self = this;

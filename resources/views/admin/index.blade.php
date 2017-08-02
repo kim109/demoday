@@ -39,28 +39,82 @@
         <h4>모의 투자 환경 설정</h4>
 
         <div class="form-horizontal">
-            <div class="form-group">
-                <label for="supply" class="col-sm-3 col-md-2 control-label">개인별 지급 J-Coin</label>
-                <div class="col-sm-7 col-md-8">
-                    <input type="number" class="form-control" step="10" min="0" max="255" placeholder="개인별 지급 J-Coin" v-model="supply">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="supply" class="col-sm-3 col-md-4 control-label">개인별 지급 J-Coin</label>
+                        <div class="col-sm-9 col-md-8">
+                            <div class="input-group">
+                                <input type="number" class="form-control" step="10" min="0" max="255" placeholder="개인별 지급 J-Coin" v-model="supply" :readonly="notReady">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" @click="saveSetting('supply')" :disabled="notReady">저장</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="capital" class="col-sm-3 col-md-4 control-label">실제 투자액 설정</label>
+                        <div class="col-sm-9 col-md-8">
+                            <div class="input-group">
+                                <input type="number" class="form-control" step="1000" min="0" max="100000000" placeholder="실제 투자액" v-model="capital" :readonly="notReady">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" @click="saveSetting('capital')" :disabled="notReady">저장</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-default" v-on:click="saveSupply">저장</button>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="supply" class="col-sm-3 col-md-4 control-label">전문가 아이디</label>
+                        <div class="col-sm-9 col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" v-model="experts" :readonly="notReady">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" @click="saveSetting('experts')" :disabled="notReady">저장</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="capital" class="col-sm-3 col-md-4 control-label">전문가 투자 배수</label>
+                        <div class="col-sm-9 col-md-8">
+                            <div class="input-group">
+                                <input type="number" class="form-control" min="1" max="10" v-model="multiple" :readonly="notReady">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" @click="saveSetting('multiple')" :disabled="notReady">저장</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="capital" class="col-sm-3 col-md-2 control-label">실제 투자액 설정</label>
-                <div class="col-sm-7 col-md-8">
-                    <input type="number" class="form-control" step="1000" min="0" max="100000000" placeholder="실제 투자액" v-model="capital">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="capital" class="col-sm-3 col-md-4 control-label">투자 진행 상태</label>
+                        <div class="col-sm-9 col-md-8">
+                            <div class="input-group">
+                                <select class="form-control" id="state">
+                                    <option value="ready" :selected="state == 'ready'">준비중</option>
+                                    <option value="open" :selected="state == 'open'">진행중</option>
+                                    <option value="close" :selected="state == 'close'" :disabled="state == 'ready'">마감</option>
+                                </select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" @click="saveState">저장</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-default" v-on:click="saveCapital">저장</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="capital" class="col-sm-3 col-md-2 control-label">모의투자 Open</label>
-                <div class="col-sm-7">
-                    <input type="checkbox" name="my-checkbox" checked>
+                <div class="col-md-6" v-if="state === 'close'">
+                    <div class="form-group">
+                        <label for="capital" class="col-sm-3 col-md-4 control-label">모의 투자 결과 조회</label>
+                        <div class="col-sm-9 col-md-8">
+                            <button class="btn btn-primary">결과 조회</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -70,7 +124,7 @@
          <div class="row">
             <item v-for="(item, index) in items" :item="item" :index="index" v-on:remove="removeItem(index)"></item>
 
-            <div class="col-sm-6">
+            <div class="col-sm-6"  v-if="state === 'ready'">
                 <div class="panel panel-primary">
                     <div class="panel-heading">신규 PT</div>
                     <div class="panel-body form-horizontal">
@@ -100,7 +154,7 @@
                         </div>
                     </div>
                     <div class="panel-footer text-right">
-                        <button class="btn btn-sm btn-success" v-on:click="storeItem">등록</button>
+                        <button class="btn btn-sm btn-success" @click="storeItem">등록</button>
                     </div>
                 </div>
             </div>

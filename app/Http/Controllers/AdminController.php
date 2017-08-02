@@ -26,7 +26,7 @@ class AdminController extends Controller
         if (!$request->ajax()) {
             return reponse()->json(['error' => 'invalid connection'], 406);
         }
-        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital']);
+        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital', 'experts', 'multiple']);
         $repsonse = $settings->toArray();
         $items = Item::all(['id', 'title', 'company', 'speaker', 'description']);
         $repsonse['items'] = $items->toArray();
@@ -41,7 +41,9 @@ class AdminController extends Controller
         }
         $this->validate($request, [
             'supply' => 'integer|min:1',
-            'capital' => 'integer|min:1'
+            'capital' => 'integer|min:1',
+            'multiple' => 'integer|min:1',
+            'state' => 'in:ready,open,close'
         ]);
 
         $setting = Setting::find(1);
@@ -51,6 +53,12 @@ class AdminController extends Controller
         }
         if ($request->has('capital')) {
             $setting->capital = $request->input('capital');
+        }
+        if ($request->has('multiple')) {
+            $setting->multiple = $request->input('multiple');
+        }
+        if ($request->has('state')) {
+            $setting->state = $request->input('state');
         }
 
         $setting->save();
