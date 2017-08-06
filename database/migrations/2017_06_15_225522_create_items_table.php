@@ -19,6 +19,9 @@ class CreateItemsTable extends Migration
             $table->string('company');
             $table->string('speaker');
             $table->text('description');
+            $table->boolean('event_open')->default(false)->commnet('출석 이벤트 시작여부');
+            $table->unsignedTinyInteger('event_rank')->nullable()->comment('당첨 순번');
+            $table->string('event_winner')->nullable()->commnet('출석 이벤트 당첨자');
             $table->timestamps();
         });
     }

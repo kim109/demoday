@@ -49,40 +49,48 @@ var setting = new Vue({
     },
     methods: {
         saveSetting: function (type) {
-            let param = {};
-            param[type] = this[type];
+            if (window.confirm('저장 하시겠습니까?')) {
+                let param = {};
+                param[type] = this[type];
 
-            axios.patch('admin/setting', param)
-            .catch((error) => {
-                console.log(error);
-            });
+                axios.patch('admin/setting', param)
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
         },
         saveState: function (event) {
-            let value = document.getElementById("state").value;
-            let self = this;
+            if (window.confirm('진행 상태를 변경 하시겠습니까?')) {
+                let value = document.getElementById("state").value;
+                let self = this;
 
-            axios.patch('admin/setting', {'state': value})
+                axios.patch('admin/setting', {'state': value})
+                    .then((response) => {
+                        self.state = value;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                document.getElementById("state").value = this.state;
+            }
+        },
+        storeItem: function (event) {
+            if (window.confirm('신규  PT를 등록 하시겠습니까?')) {
+                let self = this;
+                axios.post('admin/items', self.item)
                 .then((response) => {
-                    self.state = value;
+                    self.item.title = null;
+                    self.item.company = null;
+                    self.item.speaker = null;
+                    self.item.description = null;
+
+                    self.items.push(response.data.item);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
-        },
-        storeItem: function (event) {
-            let self = this;
-            axios.post('admin/items', self.item)
-            .then((response) => {
-                self.item.title = null;
-                self.item.company = null;
-                self.item.speaker = null;
-                self.item.description = null;
-
-                self.items.push(response.data.item);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            }
         },
         removeItem: function (index) {
             this.items.splice(index, 1);

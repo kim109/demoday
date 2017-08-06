@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Redis;
 use App\Setting;
 use App\Item;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class AdminController extends Controller
         }
         $settings = Setting::findOrFail(1, ['state', 'supply', 'capital', 'experts', 'multiple']);
         $repsonse = $settings->toArray();
-        $items = Item::all(['id', 'title', 'company', 'speaker', 'description']);
+        $items = Item::all();
         $repsonse['items'] = $items->toArray();
 
         return response()->json($repsonse);
@@ -131,6 +132,35 @@ class AdminController extends Controller
 
         $item = Item::find($id);
         $item->delete();
+
+        return response()->json(['result' => 'success']);
+    }
+
+    public function event($id, Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+        $this->validate($request, [
+            'open' => 'required|boolean',
+            'rank' => 'integer|min:1|max:300'
+        ]);
+
+        $item = Item::find($id);
+
+        $open = $request->input('open');
+        if ($open) {
+            $item->event_open = true;
+            $item->event_rank = $request->input('rank');
+            $item->event_winner = null;
+            $item->save();
+
+            $key = 'Item:'.$id.':Event';
+            Redis::command('del', [$key]);
+        } else {
+            $item->event_open = false;
+            $item->save();
+        }
 
         return response()->json(['result' => 'success']);
     }
