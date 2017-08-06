@@ -112,7 +112,7 @@
                     <div class="form-group">
                         <label for="capital" class="col-sm-3 col-md-4 control-label">모의 투자 결과 조회</label>
                         <div class="col-sm-9 col-md-8">
-                            <button class="btn btn-primary">결과 조회</button>
+                            <button class="btn btn-primary" @click="showResult">결과 조회</button>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
          <hr>
 
          <div class="row">
-            <item v-for="(item, index) in items" :item="item" :index="index" v-on:remove="removeItem(index)"></item>
+            <item v-for="(item, index) in items" :key="item.id" :item="item" :index="index" v-on:remove="removeItem(index)"></item>
 
             <div class="col-sm-6"  v-if="state === 'ready'">
                 <div class="panel panel-primary">
@@ -156,6 +156,24 @@
                     <div class="panel-footer text-right">
                         <button class="btn btn-sm btn-success" @click="storeItem">등록</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">모의 투자 결과</h4>
+                </div>
+                <div class="modal-body">
+                    <result-grid></result-grid>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>

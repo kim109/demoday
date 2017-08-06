@@ -1,3 +1,6 @@
+window.$ = window.jQuery = require('jquery');
+require('bootstrap');
+
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
@@ -11,6 +14,7 @@ if (token) {
 window.Vue = require('vue');
 
 Vue.component('item', require('./components/Item.vue'));
+Vue.component('result-grid', require('./components/ResultGrid.vue'));
 
 var setting = new Vue({
     el: '#admin',
@@ -94,6 +98,9 @@ var setting = new Vue({
         },
         removeItem: function (index) {
             this.items.splice(index, 1);
+        },
+        showResult: function () {
+            $('#modal').modal('show');
         }
     }
 });
