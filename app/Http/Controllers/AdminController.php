@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Redis;
 use App\Setting;
 use App\Item;
+use App\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -147,6 +148,8 @@ class AdminController extends Controller
         ]);
 
         $item = Item::find($id);
+        $key = 'Item:'.$id.':Event';
+        $response = ['result' => 'success'];
 
         $open = $request->input('open');
         if ($open) {
@@ -155,13 +158,25 @@ class AdminController extends Controller
             $item->event_winner = null;
             $item->save();
 
-            $key = 'Item:'.$id.':Event';
             Redis::command('del', [$key]);
         } else {
+            $rank = $item->event_rank;
+            $result = Redis::command('ZRANGE', [$key, $rank-1, $rank-1]);
+            $user = empty($result) ? null : User::find($result[0]);
+
+            if ($user == null) {
+                $winner = null;
+            } else {
+                $winner = $user->name.'('.$user->username.')';
+            }
+
             $item->event_open = false;
+            $item->event_winner = $winner;
             $item->save();
+
+            $response['winner'] = $winner;
         }
 
-        return response()->json(['result' => 'success']);
+        return response()->json($response);
     }
 }

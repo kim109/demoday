@@ -41,6 +41,9 @@
                                 </button>
                             </span>
                         </div>
+                        <span class="help-block" v-if="this.item.event_winner != null">
+                            당첨자 : {{ this.item.event_winner }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -115,6 +118,11 @@
                 axios.patch('admin/items/'+this.item.id+'/event', {"open": false})
                     .then((response) => {
                         this.item.event_open = false;
+                        this.item.event_winner = response.data.winner;
+
+                        if (response.data.winner == null) {
+                            alert('당첨자가 없습니다.');
+                        }
                     })
                     .catch((error) => {
                         console.log(error);
