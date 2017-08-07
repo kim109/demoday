@@ -14,7 +14,7 @@ if (token) {
 window.Vue = require('vue');
 
 Vue.component('item', require('./components/Item.vue'));
-Vue.component('result-grid', require('./components/ResultGrid.vue'));
+let result = Vue.component('result-grid', require('./components/ResultGrid.vue'));
 
 var setting = new Vue({
     el: '#admin',
@@ -30,7 +30,8 @@ var setting = new Vue({
             company: null,
             speaker: null,
             description: null
-        }
+        },
+        results: null
     },
     computed: {
         notReady: function () {
@@ -100,7 +101,14 @@ var setting = new Vue({
             this.items.splice(index, 1);
         },
         showResult: function () {
-            $('#modal').modal('show');
+            axios.get('admin/results')
+            .then((response) => {
+                this.results = response.data;
+                $('#modal').modal('show');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         }
     }
 });

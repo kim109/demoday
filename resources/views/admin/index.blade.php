@@ -27,10 +27,15 @@
                 </div>
 
                 <div class="collapse navbar-collapse" id="reset-button">
-                    <form class="navbar-right" action="admin/reset" method="post" id="reset-form">
-                        {!! csrf_field() !!}
+                    <form class="navbar-right" action="admin/reset" method="post">
+                        {{ csrf_field() }}
                         <input type="hidden" name="_method" value="delete">
-                        <button type="button" class="btn btn-sm btn-danger navbar-btn"><i class="fa fa-repeat" aria-hidden="true"></i> Reset</button>
+                        <input type="submit" class="btn btn-sm btn-danger navbar-btn" value="&#xf0e2 Reset">
+                    </form>
+
+                    <form class="navbar-right" action="{{ route('logout') }}" method="post">
+                        {{ csrf_field() }}
+                        <input type="submit" class="btn btn-sm btn-danger navbar-btn" value="&#xf08b Logout">
                     </form>
                 </div>
             </div>
@@ -45,7 +50,7 @@
                         <label for="supply" class="col-sm-3 col-md-4 control-label">개인별 지급 J-Coin</label>
                         <div class="col-sm-9 col-md-8">
                             <div class="input-group">
-                                <input type="number" class="form-control" step="10" min="0" max="255" placeholder="개인별 지급 J-Coin" v-model="supply" :readonly="notReady">
+                                <input type="number" class="form-control" step="10" min="0" max="255" placeholder="개인별 지급 J-Coin" v-model.number="supply" :readonly="notReady">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" @click="saveSetting('supply')" :disabled="notReady">저장</button>
                                 </span>
@@ -56,7 +61,7 @@
                         <label for="capital" class="col-sm-3 col-md-4 control-label">실제 투자액 설정</label>
                         <div class="col-sm-9 col-md-8">
                             <div class="input-group">
-                                <input type="number" class="form-control" step="1000" min="0" max="100000000" placeholder="실제 투자액" v-model="capital" :readonly="notReady">
+                                <input type="number" class="form-control" step="1000" min="0" max="100000000" placeholder="실제 투자액" v-model.number="capital" :readonly="notReady">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" @click="saveSetting('capital')" :disabled="notReady">저장</button>
                                 </span>
@@ -80,7 +85,7 @@
                         <label for="capital" class="col-sm-3 col-md-4 control-label">전문가 투자 배수</label>
                         <div class="col-sm-9 col-md-8">
                             <div class="input-group">
-                                <input type="number" class="form-control" min="1" max="10" v-model="multiple" :readonly="notReady">
+                                <input type="number" class="form-control" min="1" max="10" v-model.number="multiple" :readonly="notReady">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" @click="saveSetting('multiple')" :disabled="notReady">저장</button>
                                 </span>
@@ -159,21 +164,21 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">모의 투자 결과</h4>
-                </div>
-                <div class="modal-body">
-                    <result-grid></result-grid>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+        <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">모의 투자 결과</h4>
+                    </div>
+                    <div class="modal-body">
+                        <result-grid :results="results"></result-grid>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>

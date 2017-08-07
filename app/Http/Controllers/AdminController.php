@@ -179,4 +179,42 @@ class AdminController extends Controller
 
         return response()->json($response);
     }
+
+    public function getResult(Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['error' => 'invalid connection'], 406);
+        }
+        // 진행 상태 확인
+        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital']);
+        if ($settings->state != 'close') {
+            return reponse()->json(['error' => '투자가 마감되지 않았습니다.'], 406);
+        }
+
+        $users = user::all();
+        foreach ($users as $user) {
+            if ($user->funds->sum('investment') != $settings->supply) {
+                $user->funds()->delete();
+            }
+        }
+
+        $results = null;
+        $total = 0;
+
+        $items = Item::all(['id', 'title']);
+
+        foreach ($items as $index => $item) {
+            $results[$index]['id'] = $item->id;
+            $results[$index]['title'] = $item->title;
+            $results[$index]['coin'] = $item->funds->sum('investment');
+
+            $total += $results[$index]['coin'];
+        }
+
+        foreach ($results as $index => $result) {
+            $results[$index]['investment'] = round($result['coin'] * $settings->capital / $total);
+        }
+
+        return response()->json($results);
+    }
 }

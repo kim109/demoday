@@ -31,4 +31,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::patch('items/{id}', 'AdminController@editItem');
     Route::delete('items/{id}', 'AdminController@removeItem');
     Route::patch('items/{id}/event', 'AdminController@event');
+
+    Route::get('results', 'AdminController@getResult');
 });

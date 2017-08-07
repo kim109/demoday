@@ -65,14 +65,6 @@
                 required: true
             }
         },
-        data: function() {
-            return {
-               title: null,
-               company: null,
-               speaker: null,
-               description : null
-            }
-        },
         computed: {
             enableOpen: function () {
                 return this.$parent.state == 'open' && !this.item.event_open;
