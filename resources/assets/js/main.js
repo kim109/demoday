@@ -65,6 +65,21 @@ const view = {
             item : store.selected
         }
     },
+    watch: {
+        investment: function (newValue) {
+            if (newValue < 1) {
+                ons.notification.alert('최소 투자금은 1 입니다.');
+                this.investment = 1;
+            } else if (newValue > 91) {
+                ons.notification.alert('최소 투자금은 91 입니다.');
+                this.investment = 91;
+            } else if (this.balance < 0) {
+                let max = newValue+ this.balance;
+                ons.notification.alert('J-Coin 잔여금이 모두 소진 되었습니다.<br>다른 PT 투자금을 하향 조정해주세요.');
+                this.investment = max;
+            }
+        }
+    },
     computed: {
         balance: function() {
             let consume = 0;
@@ -77,22 +92,6 @@ const view = {
         }
     },
     methods: {
-        minus() {
-            if(this.investment <= 1) {
-                ons.notification.alert('최소 투자금은 1 입니다.');
-                this.investment = 1;
-            } else {
-               this.investment--;
-            }
-        },
-        plus() {
-            if(this.investment >= 99) {
-                ons.notification.alert('최대 투자금은 99 입니다.');
-                this.investment = 99;
-            } else {
-               this.investment++;
-            }
-        },
         save() {
             let result = ons.notification.confirm({
                 title: '투자금 설정',
@@ -123,11 +122,13 @@ const view = {
                     }
                 }
             });
+        },
+        event() {
+            alert('111');
         }
     },
     beforeMount: function () {
         this.investment = store.selected.investment;
-        // console.log('##');
     },
     props: ['pageStack']
 };

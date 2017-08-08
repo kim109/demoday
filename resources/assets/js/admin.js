@@ -1,5 +1,6 @@
 window.$ = window.jQuery = require('jquery');
 require('bootstrap');
+require('es6-promise').polyfill();
 
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -14,7 +15,8 @@ if (token) {
 window.Vue = require('vue');
 
 Vue.component('item', require('./components/Item.vue'));
-let result = Vue.component('result-grid', require('./components/ResultGrid.vue'));
+Vue.component('result-grid', require('./components/ResultGrid.vue'));
+Vue.component('result-detail-grid', require('./components/ResultDetailGrid.vue'));
 
 var setting = new Vue({
     el: '#admin',
@@ -31,7 +33,8 @@ var setting = new Vue({
             speaker: null,
             description: null
         },
-        results: null
+        results: null,
+        resultDetail: null
     },
     computed: {
         notReady: function () {
@@ -109,6 +112,9 @@ var setting = new Vue({
             .catch((error) => {
                 console.log(error);
             });
+        },
+        showResultDetail: function(item) {
+            this.resultDetail = item;
         }
     }
 });

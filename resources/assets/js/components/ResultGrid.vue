@@ -27,13 +27,23 @@
         <tbody>
             <tr v-for="result in results">
                 <td class="hidden-xs hidden-sm">{{ result.id }}</td>
-                <td>{{ result.title }}</td>
+                <td><a href="#" @click="detail($event, result.id)">{{ result.title }}</a></td>
                 <td class="text-right hidden-xs">{{ result.coin.toLocaleString() }}</td>
                 <td class="text-right">
-                    <i class="fa fa-krw" aria-hidden="true"></i> {{ result.investment.toLocaleString() }}
+                    {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
                 </td>
             </tr>
         </tbody>
+        <tfoot>
+            <tr>
+                <th class="hidden-xs hidden-sm"></th>
+                <th>총 투자금액</th>
+                <th class="text-right hidden-xs">{{ total.coin.toLocaleString() }}</th>
+                <th class="text-right">
+                    {{ total.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
+                </th>
+            </tr>
+        </tfoot>
     </table>
 </template>
 
@@ -54,6 +64,19 @@
                 }
             }
         },
+        computed: {
+            total: function() {
+                var coin = 0;
+                var investment = 0;
+
+                this.results.forEach(function(result) {
+                    coin += result.coin;
+                    investment += result.investment;
+                });
+
+                return {"coin":coin, "investment":investment};
+            }
+        },
         methods: {
             sortBy: function(column) {
                 for (var i in this.order) {
@@ -71,6 +94,10 @@
                 });
 
                 this.order[column] = this.order[column] * -1;
+            },
+            detail: function(event, id) {
+                event.preventDefault();
+                this.$emit('detail', id);
             }
         }
     }

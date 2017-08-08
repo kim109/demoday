@@ -62,10 +62,11 @@
       <v-ons-card>
         <div class="title">J-Coin 투자금액</div>
         <div class="content" style="text-align: center">
+          <p style="text-align:right"><v-ons-button style="margin: 6px 0" @click="event">출석 체크</v-ons-button></p>
           <p style="text-align: left">잔여 코인 : @{{ balance }}</p>
-          <button @click="minus"><v-ons-icon icon="ion-minus-round"></v-ons-icon></button>
-          <input style="text-align: center;padding: 2px 0" type="number" id="investment" min="1" max="99"  v-model="investment">
-          <button @click="plus"><v-ons-icon icon="ion-plus-round"></v-ons-icon></button>
+          <button @click="investment -= 1"><v-ons-icon icon="ion-minus-round"></v-ons-icon></button>
+          <input style="text-align: center;padding: 2px 0" type="number" id="investment" min="1" max="99" v-model.number.lazy="investment">
+          <button @click="investment += 1"><v-ons-icon icon="ion-plus-round"></v-ons-icon></button>
 
           <v-ons-button modifier="large" style="margin: 6px 0" @click="save">저 장</v-ons-button>
         </div>

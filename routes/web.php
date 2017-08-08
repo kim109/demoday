@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('main');
+    $uri = Auth::check() ? 'main' : 'login';
+    return redirect($uri);
 });
 
 Auth::routes();
@@ -26,11 +27,12 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('setting', 'AdminController@getSetting');
     Route::patch('setting', 'AdminController@setSetting');
 
-    Route::post('items', 'AdminController@storeItem');
-    Route::get('items/{id}', 'AdminController@getItem');
-    Route::patch('items/{id}', 'AdminController@editItem');
-    Route::delete('items/{id}', 'AdminController@removeItem');
+    Route::post('items', 'Admin\ItemController@store');
+    Route::patch('items/{id}', 'Admin\ItemController@edit')->where('id', '[0-9]+');
+    Route::delete('items/{id}', 'Admin\ItemController@remove')->where('id', '[0-9]+');
+
     Route::patch('items/{id}/event', 'AdminController@event');
 
-    Route::get('results', 'AdminController@getResult');
+    Route::get('results', 'Admin\ResultController@overview');
+    Route::get('results/{id}', 'Admin\ResultController@detail')->where('id', '[0-9]+');
 });

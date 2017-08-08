@@ -173,11 +173,8 @@
                         <h4 class="modal-title">모의 투자 결과</h4>
                     </div>
                     <div class="modal-body">
-                        <result-grid :results="results"></result-grid>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <result-grid v-if="resultDetail == null" v-on:detail="showResultDetail" :results="results"></result-grid>
+                        <result-detail-grid v-else v-on:overview="showResult" :id="resultDetail"></result-detail-grid>
                     </div>
                 </div>
             </div>
