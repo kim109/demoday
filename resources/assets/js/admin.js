@@ -34,7 +34,7 @@ var setting = new Vue({
             description: null
         },
         results: null,
-        resultDetail: null
+        selectedResult: null
     },
     computed: {
         notReady: function () {
@@ -114,7 +114,7 @@ var setting = new Vue({
             });
         },
         showResultDetail: function(item) {
-            this.resultDetail = item;
+            this.selectedResult = item;
         }
     }
 });

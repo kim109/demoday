@@ -61,20 +61,16 @@ class ResultController extends Controller
         if ($settings->state != 'close') {
             return reponse()->json(['error' => '투자가 마감되지 않았습니다.'], 406);
         }
-        $funds = \App\Fund::where('item_id', $id)->get();
 
         $results = null;
-        $total = 0;
-
+        $funds = \App\Fund::where('item_id', $id)->get();
         foreach ($funds as $fund) {
-            $results['data'][] = [
+            $results[] = [
                 'name' => $fund->user->name,
                 'username' => $fund->user->username,
                 'investment' => $fund->investment
             ];
-            $total += $fund->investment;
         }
-        $results['total'] = $total;
 
         return response()->json($results);
     }

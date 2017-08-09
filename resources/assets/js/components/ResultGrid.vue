@@ -4,30 +4,30 @@
             <tr>
                 <th class="text-center hidden-xs hidden-sm" @click="sortBy('id')">
                     No.
-                    <i v-if="order.id == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                    <i v-if="order.id == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                    <span v-if="order.id == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                    <span v-if="order.id == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                 </th>
                 <th class="text-center" @click="sortBy('title')">
                     PT
-                    <i v-if="order.title == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                    <i v-if="order.title == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                    <span v-if="order.title == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                    <span v-if="order.title == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                 </th>
                 <th class="text-center hidden-xs" @click="sortBy('coin')">
                     J-Coin 총 투자액
-                    <i v-if="order.coin == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                    <i v-if="order.coin == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                    <span v-if="order.coin == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                    <span v-if="order.coin == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                 </th>
                 <th class="text-center" @click="sortBy('investment')">
                     실제 투자액
-                    <i v-if="order.investment == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                    <i v-if="order.investment == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                    <span v-if="order.investment == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                    <span v-if="order.investment == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                 </th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="result in results">
-                <td class="hidden-xs hidden-sm">{{ result.id }}</td>
-                <td><a href="#" @click="detail($event, result.id)">{{ result.title }}</a></td>
+            <tr v-for="(result, index) in results">
+                <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
+                <td><a href="#" @click="detail($event, result)">{{ result.title }}</a></td>
                 <td class="text-right hidden-xs">{{ result.coin.toLocaleString() }}</td>
                 <td class="text-right">
                     {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
@@ -95,9 +95,9 @@
 
                 this.order[column] = this.order[column] * -1;
             },
-            detail: function(event, id) {
+            detail: function(event, result) {
                 event.preventDefault();
-                this.$emit('detail', id);
+                this.$emit('detail', result);
             }
         }
     }

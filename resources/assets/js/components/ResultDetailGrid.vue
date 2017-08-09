@@ -1,33 +1,38 @@
 <template>
     <div>
+        <ol class="breadcrumb">
+            <li><a href="#" @click="overview">전체</a></li>
+            <li class="active">
+                {{ result.title }}
+                <small>( {{ result.coin.toLocaleString() }} J-Coin
+                    <span class="hidden-xs">/ {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW'}) }}</span> )
+                </small>
+            </li>
+        </ol>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="text-center hidden-xs hidden-sm" @click="sortBy('id')">
-                        No.
-                        <i v-if="order.id == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                        <i v-if="order.id == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-                    </th>
+                    <th class="text-center hidden-xs hidden-sm">No.</th>
                     <th @click="sortBy('name')">
                         이름
-                        <i v-if="order.title == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                        <i v-if="order.title == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                        <span v-if="order.name == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                        <span v-if="order.name == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                     </th>
-                    <th class="hidden-xs" @click="sortBy('username')">
+                    <th @click="sortBy('username')">
                         ID
-                        <i v-if="order.coin == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                        <i v-if="order.coin == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                        <span v-if="order.username == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                        <span v-if="order.username == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                     </th>
                     <th class="text-center" @click="sortBy('investment')">
                         J-Coin 투자액
-                        <i v-if="order.investment == 1" class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                        <i v-if="order.investment == -1" class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                        <span v-if="order.investment == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                        <span v-if="order.investment == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(value, key, index) in data">
-                    <td class="hidden-xs hidden-sm">{{ key+1 }}</td>
+                <tr v-for="(value, index) in data">
+                    <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
                     <td>{{ value.name }}</td>
                     <td>{{ value.username }}</td>
                     <td class="text-right">
@@ -42,14 +47,13 @@
 <script>
     export default {
         props: {
-            id: {
+            result: {
                 required: true
             }
         },
         data: function() {
             return {
                 data: null,
-                total: null,
                 order: {
                     name: null,
                     username: null,
@@ -67,20 +71,23 @@
                     }
                 }
 
-                this.results.sort((a, b) => {
+                this.data.sort((a, b) => {
                     a = a[column];
                     b = b[column];
                     return (a === b ? 0 : a > b ? 1 : -1) * this.order[column];
                 });
 
                 this.order[column] = this.order[column] * -1;
+            },
+            overview: function(event) {
+                event.preventDefault();
+                this.$emit('overview');
             }
         },
         mounted: function () {
-            axios.get('admin/results/'+this.id)
+            axios.get('admin/results/'+this.result.id)
             .then((response) => {
-                this.total = response.data.total;
-                this.data = response.data.data;
+                this.data = response.data;
             })
             .catch((error) => {
                 console.log(error);

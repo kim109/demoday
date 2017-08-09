@@ -6,28 +6,28 @@
                 <div class="form-group form-group-sm">
                     <label class="col-sm-3 control-label">발표 제목</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" placeholder="발표 제목" v-model="item.title">
+                        <input type="text" class="form-control" placeholder="발표 제목" v-model="item.title" :readonly="this.$parent.notReady">
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <label class="col-sm-3 control-label"><span class="hidden-sm">발표자 </span>회사</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" placeholder="발표자 회사" v-model="item.company">
+                        <input type="text" class="form-control" placeholder="발표자 회사" v-model="item.company" :readonly="this.$parent.notReady">
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <label class="col-sm-3 control-label"><span class="hidden-sm">발표자 </span>이름</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" placeholder="발표자 이름" v-model="item.speaker">
+                        <input type="text" class="form-control" placeholder="발표자 이름" v-model="item.speaker" :readonly="this.$parent.notReady">
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <label class="col-sm-3 control-label"><span class="hidden-sm">발표 </span>내용 요약</label>
                     <div class="col-sm-9">
-                        <textarea class="form-control" rows="3" v-model="item.description"></textarea>
+                        <textarea class="form-control" rows="3" v-model="item.description" :readonly="this.$parent.notReady"></textarea>
                     </div>
                 </div>
-                <div class="form-group form-group-sm">
+                <div class="form-group form-group-sm" v-if="this.$parent.notReady">
                     <label class="col-sm-3 control-label"><span class="hidden-sm">출석 </span>이벤트</label>
                     <div class="col-sm-9">
                         <div class="input-group">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-footer text-right">
+            <div class="panel-footer text-right" v-if="this.$parent.state == 'ready'">
                 <button class="btn btn-sm btn-info" @click="edit" :disabled="this.$parent.notReady">수정</button>
                 <button class="btn btn-sm btn-danger" @click="remove" :disabled="this.$parent.notReady">삭제</button>
             </div>

@@ -17,7 +17,7 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#reset-button" aria-expanded="false">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar" aria-expanded="false">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -26,16 +26,25 @@
                     <a class="navbar-brand" href="/admin">T.J.D 모의투자 Admin</a>
                 </div>
 
-                <div class="collapse navbar-collapse" id="reset-button">
-                    <form class="navbar-right" action="admin/reset" method="post">
+                <div class="collapse navbar-collapse" id="top-navbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="admin/reset" onclick="document.getElementById('reset').submit(); return false;">
+                                <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Reset
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('logout') }}" onclick="document.getElementById('logout').submit(); return false;">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> 로그아웃
+                            </a>
+                        </li>
+                    </ul>
+                    <form id="reset" method="post" action="admin/reset">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="delete">
-                        <input type="submit" class="btn btn-sm btn-danger navbar-btn" value="&#xf0e2 Reset">
                     </form>
-
-                    <form class="navbar-right" action="{{ route('logout') }}" method="post">
+                    <form id="logout" method="post" action="{{ route('logout') }}">
                         {{ csrf_field() }}
-                        <input type="submit" class="btn btn-sm btn-danger navbar-btn" value="&#xf08b Logout">
                     </form>
                 </div>
             </div>
@@ -133,26 +142,26 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">신규 PT</div>
                     <div class="panel-body form-horizontal">
-                        <div class="form-group">
+                        <div class="form-group form-group-sm">
                             <label class="col-sm-3 control-label">발표 제목</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control input-sm" placeholder="발표 제목" v-model="item.title">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">발표자 회사</label>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label"><span class="hidden-sm">발표자 </span>회사</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control input-sm" placeholder="발표자 회사" v-model="item.company">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">발표자 이름</label>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label"><span class="hidden-sm">발표자 </span>이름</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control input-sm" placeholder="발표자 이름" v-model="item.speaker">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">발표 내용 요약</label>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label"><span class="hidden-sm">발표 </span>내용 요약</label>
                             <div class="col-sm-9">
                                 <textarea class="form-control input-sm" v-model="item.description"></textarea>
                             </div>
@@ -173,8 +182,8 @@
                         <h4 class="modal-title">모의 투자 결과</h4>
                     </div>
                     <div class="modal-body">
-                        <result-grid v-if="resultDetail == null" v-on:detail="showResultDetail" :results="results"></result-grid>
-                        <result-detail-grid v-else v-on:overview="showResult" :id="resultDetail"></result-detail-grid>
+                        <result-grid v-if="results != null && selectedResult == null" v-on:detail="showResultDetail" :results="results"></result-grid>
+                        <result-detail-grid  v-if="selectedResult != null" v-on:overview="selectedResult = null" :result="selectedResult"></result-detail-grid>
                     </div>
                 </div>
             </div>
