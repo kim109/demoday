@@ -178,8 +178,10 @@
                         <h4 class="modal-title">모의 투자 결과</h4>
                     </div>
                     <div class="modal-body">
-                        <result-grid v-if="results != null && selectedResult == null" v-on:detail="showResultDetail" :results="results"></result-grid>
-                        <result-detail-grid  v-if="selectedResult != null" v-on:overview="selectedResult = null" :result="selectedResult"></result-detail-grid>
+                        <transition name="result-fade" mode="out-in">
+                            <result-grid v-if="results != null && selectedResult == null" v-on:detail="showResultDetail" :results="results"></result-grid>
+                            <result-detail-grid  v-if="selectedResult != null" v-on:overview="selectedResult = null" :result="selectedResult"></result-detail-grid>
+                        </transition>
                     </div>
                 </div>
             </div>

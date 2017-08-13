@@ -3,3 +3,10 @@
 @import "variables";
 @import "bootswatch";
 @import "~bootstrap/less/utilities";
+
+.result-fade-enter-active, .result-fade-leave-active {
+    transition: opacity .3s ease;
+}
+.result-fade-enter, .result-fade-leave-to {
+    opacity: 0;
+}
