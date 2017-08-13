@@ -29,7 +29,7 @@
                 <div class="collapse navbar-collapse" id="top-navbar">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="admin/reset" onclick="document.getElementById('reset').submit(); return false;">
+                            <a href="#" @click="reset">
                                 <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Reset
                             </a>
                         </li>
@@ -39,10 +39,6 @@
                             </a>
                         </li>
                     </ul>
-                    <form id="reset" method="post" action="admin/reset">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="_method" value="delete">
-                    </form>
                     <form id="logout" method="post" action="{{ route('logout') }}">
                         {{ csrf_field() }}
                     </form>

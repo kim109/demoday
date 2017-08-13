@@ -56,6 +56,30 @@ var setting = new Vue({
             });
     },
     methods: {
+        reset: function (event) {
+            event.preventDefault();
+
+            if (window.confirm('리셋 하시겠습니까?')) {
+                axios.delete('admin/reset')
+                .then((response) => {
+                    axios.get('admin/setting')
+                    .then((response) => {
+                        this.supply = response.data.supply;
+                        this.capital = response.data.capital;
+                        this.experts = response.data.experts;
+                        this.multiple = response.data.multiple;
+                        this.state = response.data.state;
+                        this.items = response.data.items;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+        },
         saveSetting: function (type) {
             if (window.confirm('저장 하시겠습니까?')) {
                 let param = {};

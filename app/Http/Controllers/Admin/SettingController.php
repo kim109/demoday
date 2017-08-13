@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use Redis;
 use App\Setting;
 use App\Item;
-use App\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class AdminController extends Controller
+class SettingController extends Controller
 {
     public function __construct()
     {
@@ -68,46 +67,19 @@ class AdminController extends Controller
         return response()->json(['result' => 'success']);
     }
 
-    public function event($id, Request $request)
+    public function reset(Request $request)
     {
-        if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
-        }
-        $this->validate($request, [
-            'open' => 'required|boolean',
-            'rank' => 'integer|min:1|max:300'
-        ]);
+        $setting = Setting::find(1);
+        $setting->state = 'ready';
+        $setting->supply = 100;
+        $setting->capital = 10000000;
+        $setting->experts = null;
+        $setting->multiple = null;
+        $setting->save();
 
-        $item = Item::find($id);
-        $key = 'Item:'.$id.':Event';
-        $response = ['result' => 'success'];
+        Item::truncate();
+        \App\Fund::truncate();
 
-        $open = $request->input('open');
-        if ($open) {
-            $item->event_open = true;
-            $item->event_rank = $request->input('rank');
-            $item->event_winner = null;
-            $item->save();
-
-            Redis::command('del', [$key]);
-        } else {
-            $rank = $item->event_rank;
-            $result = Redis::command('ZRANGE', [$key, $rank-1, $rank-1]);
-            $user = empty($result) ? null : User::find($result[0]);
-
-            if ($user == null) {
-                $winner = null;
-            } else {
-                $winner = $user->name.'('.$user->username.')';
-            }
-
-            $item->event_open = false;
-            $item->event_winner = $winner;
-            $item->save();
-
-            $response['winner'] = $winner;
-        }
-
-        return response()->json($response);
+        return response()->json(['result' => 'success']);
     }
 }

@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(value, index) in data">
+                <tr v-for="(value, index) in data" :key="value.username">
                     <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
                     <td>{{ value.name }}</td>
                     <td>{{ value.username }}</td>

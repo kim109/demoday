@@ -25,7 +25,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(result, index) in results">
+            <tr v-for="(result, index) in results" :key="result.id">
                 <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
                 <td><a href="#" @click="detail($event, result)">{{ result.title }}</a></td>
                 <td class="text-right hidden-xs">{{ result.coin.toLocaleString() }}</td>

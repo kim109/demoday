@@ -22,17 +22,17 @@ Route::get('/main', 'MainController@index')->name('main');
 Route::get('/main/items', 'MainController@items');
 Route::post('/main/investment', 'MainController@investment');
 
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('/', 'AdminController@index');
-    Route::get('setting', 'AdminController@getSetting');
-    Route::patch('setting', 'AdminController@setSetting');
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
+    Route::get('/', 'SettingController@index')->name('admin');
+    Route::get('setting', 'SettingController@getSetting');
+    Route::patch('setting', 'SettingController@setSetting');
+    Route::delete('reset', 'SettingController@reset');
 
-    Route::post('items', 'Admin\ItemController@store');
-    Route::patch('items/{id}', 'Admin\ItemController@edit')->where('id', '[0-9]+');
-    Route::delete('items/{id}', 'Admin\ItemController@remove')->where('id', '[0-9]+');
+    Route::post('items', 'ItemController@store');
+    Route::patch('items/{id}', 'ItemController@edit')->where('id', '[0-9]+');
+    Route::delete('items/{id}', 'ItemController@remove')->where('id', '[0-9]+');
+    Route::patch('items/{id}/event', 'ItemController@event')->where('id', '[0-9]+');
 
-    Route::patch('items/{id}/event', 'AdminController@event');
-
-    Route::get('results', 'Admin\ResultController@overview');
-    Route::get('results/{id}', 'Admin\ResultController@detail')->where('id', '[0-9]+');
+    Route::get('results', 'ResultController@overview');
+    Route::get('results/{id}', 'ResultController@detail')->where('id', '[0-9]+');
 });
