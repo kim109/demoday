@@ -22,6 +22,7 @@
     "lodash": "^4.17.4",
     "onsenui": "^2.4.2",
     "vue": "^2.1.10",
-    "vue-onsenui": "^2.0.2"
+    "vue-onsenui": "^2.0.2",
+    "vue-select": "^2.0"
   }
 }

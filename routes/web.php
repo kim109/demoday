@@ -26,6 +26,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('/', 'SettingController@index')->name('admin');
     Route::get('setting', 'SettingController@getSetting');
     Route::patch('setting', 'SettingController@setSetting');
+    Route::get('experts/options', 'SettingController@searchAD');
     Route::delete('reset', 'SettingController@reset');
 
     Route::post('items', 'ItemController@store');

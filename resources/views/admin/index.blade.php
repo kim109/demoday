@@ -79,7 +79,7 @@
                         <label for="supply" class="col-sm-3 col-md-4 control-label">전문가 아이디</label>
                         <div class="col-sm-9 col-md-8">
                             <div class="input-group">
-                                <input type="text" class="form-control" v-model="experts" :readonly="notReady">
+                                <v-select v-model="experts" multiple :on-search="getExperts" :options="expertOptions" :searchable="!notReady"></v-select>
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" @click="saveSetting('experts')" :disabled="notReady">저장</button>
                                 </span>

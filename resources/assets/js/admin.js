@@ -2,21 +2,22 @@ window.$ = window.jQuery = require('jquery');
 require('bootstrap');
 require('es6-promise').polyfill();
 
-window.axios = require('axios');
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-let token = document.head.querySelector('meta[name="csrf-token"]');
+import axios from 'axios'
+import Vue from 'vue'
+import vSelect from 'vue-select'
 
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-window.Vue = require('vue');
-
-Vue.component('item', require('./components/Item.vue'));
-Vue.component('result-grid', require('./components/ResultGrid.vue'));
-Vue.component('result-detail-grid', require('./components/ResultDetailGrid.vue'));
+Vue.component('v-select', vSelect)
+Vue.component('item', require('./components/Item.vue'))
+Vue.component('result-grid', require('./components/ResultGrid.vue'))
+Vue.component('result-detail-grid', require('./components/ResultDetailGrid.vue'))
 
 var setting = new Vue({
     el: '#admin',
@@ -34,7 +35,8 @@ var setting = new Vue({
             description: null
         },
         results: null,
-        selectedResult: null
+        selectedResult: null,
+        expertOptions: null
     },
     computed: {
         notReady: function () {
@@ -106,6 +108,17 @@ var setting = new Vue({
             } else {
                 document.getElementById("state").value = this.state;
             }
+        },
+        getExperts: function(search, loading) {
+            loading(true);
+            axios.get('admin/experts/options', {params: {'q': search}})
+                .then((response) => {
+                    this.expertOptions = response.data.items;
+                    loading(false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
         storeItem: function (event) {
             if (window.confirm('신규  PT를 등록 하시겠습니까?')) {

@@ -22,6 +22,33 @@ class SettingController extends Controller
         return view('admin.index', ['settings' => $settings]);
     }
 
+    public function searchAD(Request $request)
+    {
+        if (!$request->ajax()) {
+            return response()->json(['error' => 'invalid connection'], 406);
+        }
+        $this->validate($request, [
+            'q' => 'required'
+        ]);
+
+        $keyword = $request->input('q');
+        $users = \Adldap::search()->select('cn', 'displayName')
+                ->orwhereContains('cn', $keyword)
+                ->orWhereContains('displayName', $keyword)
+                ->get();
+
+        $items = [];
+        foreach ($users as $user) {
+            $items[] = array(
+                'label' => $user->displayname[0].'('.$user->cn[0].')',
+                'username' => $user->cn[0],
+                'name' => $user->displayname[0]
+            );
+        }
+
+        return response()->json(['items' => $items]);
+    }
+
     public function getSetting(Request $request)
     {
         if (!$request->ajax()) {
@@ -54,6 +81,9 @@ class SettingController extends Controller
         }
         if ($request->has('capital')) {
             $setting->capital = $request->input('capital');
+        }
+        if ($request->has('experts')) {
+            $setting->experts = $request->input('experts');
         }
         if ($request->has('multiple')) {
             $setting->multiple = $request->input('multiple');
