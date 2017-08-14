@@ -85,13 +85,10 @@
             }
         },
         mounted: function () {
-            axios.get('admin/results/'+this.result.id)
-            .then((response) => {
-                this.data = response.data;
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            this.$http.get('admin/results/'+this.result.id)
+                .then((response) => {
+                    this.data = response.data;
+                });
         }
     }
 </script>

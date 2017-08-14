@@ -106,19 +106,19 @@
                         <label for="capital" class="col-sm-3 col-md-4 control-label">투자 진행 상태</label>
                         <div class="col-sm-9 col-md-8">
                             <div class="input-group">
-                                <select class="form-control" id="state">
-                                    <option value="ready" :selected="state == 'ready'">준비중</option>
-                                    <option value="open" :selected="state == 'open'">진행중</option>
-                                    <option value="close" :selected="state == 'close'" :disabled="state == 'ready'">마감</option>
+                                <select class="form-control" id="status">
+                                    <option value="ready" :selected="status == 'ready'">준비중</option>
+                                    <option value="open" :selected="status == 'open'">진행중</option>
+                                    <option value="close" :selected="status == 'close'" :disabled="status == 'ready'">마감</option>
                                 </select>
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" @click="saveState">저장</button>
+                                    <button class="btn btn-default" @click="saveStatus">저장</button>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6" v-if="state === 'close'">
+                <div class="col-md-6" v-if="status === 'close'">
                     <div class="form-group">
                         <label for="capital" class="col-sm-3 col-md-4 control-label">모의 투자 결과 조회</label>
                         <div class="col-sm-9 col-md-8">
@@ -134,7 +134,7 @@
          <div class="row">
             <item v-for="(item, index) in items" :key="item.id" :item="item" :index="index" v-on:remove="removeItem(index)"></item>
 
-            <div class="col-sm-6"  v-if="state === 'ready'">
+            <div class="col-sm-6"  v-if="status === 'ready'">
                 <div class="panel panel-primary">
                     <div class="panel-heading">신규 PT</div>
                     <div class="panel-body form-horizontal">
@@ -159,7 +159,7 @@
                         <div class="form-group form-group-sm">
                             <label class="col-sm-3 control-label"><span class="hidden-sm">발표 </span>내용 요약</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control input-sm" v-model="item.description"></textarea>
+                                <textarea class="form-control input-sm" rows="3" v-model="item.description"></textarea>
                             </div>
                         </div>
                     </div>

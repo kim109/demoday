@@ -2,10 +2,11 @@ window.$ = window.jQuery = require('jquery');
 require('bootstrap');
 require('es6-promise').polyfill();
 
-import axios from 'axios'
 import Vue from 'vue'
 import vSelect from 'vue-select'
+import axios from 'axios'
 
+// CSRT 토큰 설정
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
@@ -13,6 +14,21 @@ if (token) {
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
+// Ajax Error 처리
+axios.interceptors.response.use(null, function(error) {
+    if (error.response && error.response.data.errors) {
+        if (Array.isArray(error.response.data.errors)) {
+            alert(error.response.data.errors.join("\n"));
+        } else {
+            alert(error.response.data.errors);
+        }
+    } else {
+        console.log(error);
+    }
+    return Promise.reject(error);
+});
+
+Vue.prototype.$http = axios;
 
 Vue.component('v-select', vSelect)
 Vue.component('item', require('./components/Item.vue'))
@@ -26,7 +42,7 @@ var setting = new Vue({
         capital: null,
         experts: null,
         multiple: null,
-        state: null,
+        status: null,
         items: null,
         item: {
             title: null,
@@ -40,21 +56,15 @@ var setting = new Vue({
     },
     computed: {
         notReady: function () {
-            return this.state != 'ready';
+            return this.status != 'ready';
         }
     },
     created: function () {
-        axios.get('admin/setting')
+        this.$http.get('admin/setting')
             .then((response) => {
-                this.supply = response.data.supply;
-                this.capital = response.data.capital;
-                this.experts = response.data.experts;
-                this.multiple = response.data.multiple;
-                this.state = response.data.state;
-                this.items = response.data.items;
-            })
-            .catch((error) => {
-                console.log(error);
+                for (var key in response.data) {
+                    this[key] = response.data[key];
+                }
             });
     },
     methods: {
@@ -62,24 +72,15 @@ var setting = new Vue({
             event.preventDefault();
 
             if (window.confirm('리셋 하시겠습니까?')) {
-                axios.delete('admin/reset')
-                .then((response) => {
-                    axios.get('admin/setting')
+                this.$http.delete('admin/reset')
                     .then((response) => {
-                        this.supply = response.data.supply;
-                        this.capital = response.data.capital;
-                        this.experts = response.data.experts;
-                        this.multiple = response.data.multiple;
-                        this.state = response.data.state;
-                        this.items = response.data.items;
-                    })
-                    .catch((error) => {
-                        console.log(error);
+                        this.$http.get('admin/setting')
+                            .then((response) => {
+                                for (var key in response.data) {
+                                    this[key] = response.data[key];
+                                }
+                            });
                     });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
             }
         },
         saveSetting: function (type) {
@@ -87,68 +88,53 @@ var setting = new Vue({
                 let param = {};
                 param[type] = this[type];
 
-                axios.patch('admin/setting', param)
-                .catch((error) => {
-                    console.log(error);
-                });
+                this.$http.patch('admin/setting', param);
             }
         },
-        saveState: function (event) {
+        saveStatus: function (event) {
             if (window.confirm('진행 상태를 변경 하시겠습니까?')) {
-                let value = document.getElementById("state").value;
+                let value = document.getElementById("status").value;
                 let self = this;
 
-                axios.patch('admin/setting', {'state': value})
+                this.$http.patch('admin/setting', {'status': value})
                     .then((response) => {
-                        self.state = value;
-                    })
-                    .catch((error) => {
-                        console.log(error);
+                        self.status = value;
                     });
             } else {
-                document.getElementById("state").value = this.state;
+                document.getElementById("status").value = this.status;
             }
         },
         getExperts: function(search, loading) {
             loading(true);
-            axios.get('admin/experts/options', {params: {'q': search}})
+            this.$http.get('admin/experts/options?q='+search)
                 .then((response) => {
                     this.expertOptions = response.data.items;
                     loading(false);
-                })
-                .catch((error) => {
-                    console.log(error);
                 });
         },
         storeItem: function (event) {
             if (window.confirm('신규  PT를 등록 하시겠습니까?')) {
                 let self = this;
-                axios.post('admin/items', self.item)
-                .then((response) => {
-                    self.item.title = null;
-                    self.item.company = null;
-                    self.item.speaker = null;
-                    self.item.description = null;
+                this.$http.post('admin/items', self.item)
+                    .then((response) => {
+                        self.item.title = null;
+                        self.item.company = null;
+                        self.item.speaker = null;
+                        self.item.description = null;
 
-                    self.items.push(response.data.item);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+                        self.items.push(response.data.item);
+                    });
             }
         },
         removeItem: function (index) {
             this.items.splice(index, 1);
         },
         showResult: function () {
-            axios.get('admin/results')
-            .then((response) => {
-                this.results = response.data;
-                $('#modal').modal('show');
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            this.$http.get('admin/results')
+                .then((response) => {
+                    this.results = response.data;
+                    $('#modal').modal('show');
+                });
         },
         showResultDetail: function(item) {
             this.selectedResult = item;

@@ -2,11 +2,16 @@
 @import "~bootstrap/less/bootstrap";
 @import "variables";
 @import "bootswatch";
-@import "~bootstrap/less/utilities";
 
 .result-fade-enter-active, .result-fade-leave-active {
     transition: opacity .3s ease;
 }
 .result-fade-enter, .result-fade-leave-to {
     opacity: 0;
+}
+
+.input-group .v-select .dropdown-toggle {
+    padding: 1px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
 }

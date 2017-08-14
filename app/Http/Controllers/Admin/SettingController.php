@@ -16,19 +16,18 @@ class SettingController extends Controller
 
     public function index(Request $request)
     {
-        $settings = Setting::all();
-        $items = Item::all();
-
-        return view('admin.index', ['settings' => $settings]);
+        return view('admin.index');
     }
 
     public function searchAD(Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         $this->validate($request, [
             'q' => 'required'
+        ], [], [
+            'q' => '검색어'
         ]);
 
         $keyword = $request->input('q');
@@ -52,9 +51,9 @@ class SettingController extends Controller
     public function getSetting(Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
-        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital', 'experts', 'multiple']);
+        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital', 'experts', 'multiple']);
         $repsonse = $settings->toArray();
         $items = Item::all();
         $repsonse['items'] = $items->toArray();
@@ -65,31 +64,35 @@ class SettingController extends Controller
     public function setSetting(Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         $this->validate($request, [
             'supply' => 'integer|min:1',
             'capital' => 'integer|min:1',
             'multiple' => 'integer|min:1',
-            'state' => 'in:ready,open,close'
+            'status' => 'in:ready,open,close'
+        ], [], [
+            'supply' => '개인별 지급 J-Coin',
+            'capital' => '실제 투자액',
+            'multiple' => '전문가 투자 배수'
         ]);
 
         $setting = Setting::find(1);
 
-        if ($request->has('supply')) {
+        if ($request->has('supply') && $setting->status == 'ready') {
             $setting->supply = $request->input('supply');
         }
-        if ($request->has('capital')) {
+        if ($request->has('capital') && $setting->status == 'ready') {
             $setting->capital = $request->input('capital');
         }
-        if ($request->has('experts')) {
+        if ($request->has('experts') && $setting->status == 'ready') {
             $setting->experts = $request->input('experts');
         }
-        if ($request->has('multiple')) {
+        if ($request->has('multiple') && $setting->status == 'ready') {
             $setting->multiple = $request->input('multiple');
         }
-        if ($request->has('state')) {
-            $setting->state = $request->input('state');
+        if ($request->has('status')) {
+            $setting->status = $request->input('status');
         }
 
         $setting->save();
@@ -100,7 +103,7 @@ class SettingController extends Controller
     public function reset(Request $request)
     {
         $setting = Setting::find(1);
-        $setting->state = 'ready';
+        $setting->status = 'ready';
         $setting->supply = 100;
         $setting->capital = 10000000;
         $setting->experts = null;

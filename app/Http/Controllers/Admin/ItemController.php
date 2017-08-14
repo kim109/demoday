@@ -17,13 +17,18 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         $this->validate($request, [
             'title' => 'required',
             'company' => 'required',
             'speaker' => 'required',
             'description' => 'required',
+        ], [], [
+            'title' => '발표 제목',
+            'company' => '발표자 회사',
+            'speaker' => '발표자 이름',
+            'description' => '발표 내용 요약'
         ]);
 
         $item = new Item;
@@ -39,13 +44,18 @@ class ItemController extends Controller
     public function edit($id, Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         $this->validate($request, [
             'title' => 'required',
             'company' => 'required',
             'speaker' => 'required',
             'description' => 'required',
+        ], [], [
+            'title' => '발표 제목',
+            'company' => '발표자 회사',
+            'speaker' => '발표자 이름',
+            'description' => '발표 내용 요약'
         ]);
 
         $item = Item::find($id);
@@ -61,7 +71,7 @@ class ItemController extends Controller
     public function remove($id, Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
 
         $item = Item::find($id);
@@ -73,11 +83,13 @@ class ItemController extends Controller
     public function event($id, Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         $this->validate($request, [
             'open' => 'required|boolean',
             'rank' => 'integer|min:1|max:300'
+        ], [], [
+            'rank' => '당첨 순번'
         ]);
 
         $item = Item::find($id);

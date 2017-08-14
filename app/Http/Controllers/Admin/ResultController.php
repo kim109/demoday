@@ -16,12 +16,12 @@ class ResultController extends Controller
     public function overview(Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         // 진행 상태 확인
-        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital']);
-        if ($settings->state != 'close') {
-            return reponse()->json(['error' => '투자가 마감되지 않았습니다.'], 406);
+        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital']);
+        if ($settings->status != 'close') {
+            return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
         }
 
         $users = \App\User::all();
@@ -54,12 +54,12 @@ class ResultController extends Controller
     public function detail($id, Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
         // 진행 상태 확인
-        $settings = Setting::findOrFail(1, ['state', 'supply', 'capital']);
-        if ($settings->state != 'close') {
-            return reponse()->json(['error' => '투자가 마감되지 않았습니다.'], 406);
+        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital']);
+        if ($settings->status != 'close') {
+            return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
         }
 
         $results = null;
