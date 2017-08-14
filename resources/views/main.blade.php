@@ -9,7 +9,7 @@
 <body>
   <template id="main">
     <v-ons-navigator :page-stack="pageStack" @prepush="test">
-      <component :is="page" v-for="(page, index) in pageStack" v-bind:key="index" :page-stack="pageStack"></component>
+      <component :is="page" v-for="(page, index) in pageStack" :key="index" :page-stack="pageStack"></component>
     </v-ons-navigator>
   </template>
 
@@ -26,7 +26,7 @@
 
       <v-ons-list>
         <v-ons-list-header>지급된 Coin : @{{ coin }} / 잔여 Coin: @{{ balance }}</v-ons-list-header>
-        <v-ons-list-item v-for="(item, index) in items" v-bind:key="index" modifier="chevron" @click="view(item)" tappable>
+        <v-ons-list-item v-for="(item, index) in items" :key="index" modifier="chevron" @click="view(item)" tappable>
           <span class="list-item__title">@{{ item.title }}</span>
           <span class="list-item__subtitle">투자금 : @{{ item.investment }} (@{{ (item.investment/coin*100).toFixed(2) }}%)</span>
         </v-ons-list-item>
@@ -60,9 +60,11 @@
       </v-ons-card>
 
       <v-ons-card>
-        <div class="title">J-Coin 투자금액</div>
+        <div class="title">
+            J-Coin 투자금액
+            <div style="float:right"><v-ons-button style="margin: 6px 0" :disabled="!eventEnable" @click="event">출석 체크</v-ons-button></div>
+        </div>
         <div class="content" style="text-align: center">
-          <p style="text-align:right"><v-ons-button style="margin: 6px 0" @click="event">출석 체크</v-ons-button></p>
           <p style="text-align: left">잔여 코인 : @{{ balance }}</p>
           <button @click="investment -= 1"><v-ons-icon icon="ion-minus-round"></v-ons-icon></button>
           <input style="text-align: center;padding: 2px 0" type="number" id="investment" min="1" max="99" v-model.number.lazy="investment">

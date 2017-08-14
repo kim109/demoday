@@ -6,13 +6,14 @@ use Auth;
 use App\Setting;
 use App\Item;
 use App\Fund;
+use Redis;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'state']);
+        $this->middleware(['auth', 'status']);
     }
 
     public function index(Request $request)
@@ -23,14 +24,21 @@ class MainController extends Controller
     public function items(Request $request)
     {
         if (!$request->ajax()) {
-            return reponse()->json(['error' => 'invalid connection'], 406);
+            return reponse()->json(['errors' => 'invalid connection'], 406);
         }
 
         $user = Auth::user();
-        $settting = Setting::find(1, ['supply']);
+        $setting = Setting::find(1, ['supply', 'experts', 'multiple']);
+
+        $coin = (int)$setting->supply;
+        foreach ($setting->experts as $expert) {
+            if ($expert['username'] == $user->username) {
+                $coin = $coin * $setting->multiple;
+            }
+        }
 
         $items = Item::all(['id', 'title', 'company', 'speaker', 'description']);
-        foreach ($items as $index => $item) {
+        foreach ($items as $item) {
             $item->description = nl2br($item->description);
 
             $fund = Fund::where([
@@ -41,17 +49,16 @@ class MainController extends Controller
              $item->investment = ($fund == null) ? 0 : $fund->investment;
         }
 
-        return response()->json(['coin'=>$settting->supply, 'items' => $items]);
+        return response()->json(['coin'=>$coin, 'items' => $items]);
     }
 
-    public function investment(Request $request)
+    public function investment($id, Request $request)
     {
         if (!$request->ajax()) {
-            return reponse()->json(['error' => 'invalid connection'], 406);
+            return reponse()->json(['errors' => 'invalid connection'], 406);
         }
 
         $this->validate($request, [
-            'item' => 'required|integer',
             'investment' => 'required|integer|min:1|max:99'
         ], [
             'investment.required' => '투자금을 입력하세요.',
@@ -62,21 +69,41 @@ class MainController extends Controller
 
         $user = Auth::user();
 
-        $settting = Setting::find(1, ['supply']);
+        $setting = Setting::find(1, ['supply', 'experts', 'multiple']);
+        $coin = (int)$setting->supply;
+        foreach ($setting->experts as $expert) {
+            if ($expert['username'] == $user->username) {
+                $coin = $coin * $setting->multiple;
+            }
+        }
+
         $consume = Fund::where([
             ['user_id', $user->id],
-            ['item_id', '!=', $request->input('item')]
+            ['item_id', '!=', $id]
         ])->sum('investment');
 
-        if ($settting->supply < $consume + $request->input('investment')) {
+        if ($coin < $consume + $request->input('investment')) {
             return response()->json(['errors'=> ['총 투자액 이상으로 투자하실 수 없습니다.']], 422);
         }
 
         Fund::updateOrCreate(
-            ['user_id' => $user->id, 'item_id' => $request->input('item')],
+            ['user_id' => $user->id, 'item_id' => $id],
             ['investment' => $request->input('investment')]
         );
 
-        return response()->json(['coin'=>1]);
+        return response()->json(['result' => 'success']);
+    }
+
+    public function event($id, Request $request)
+    {
+        if (!$request->ajax()) {
+            return reponse()->json(['errors' => 'invalid connection'], 406);
+        }
+
+        $user = Auth::user();
+        $key = 'Item:'.$id.':Event';
+        Redis::command('ZADD', [$key, 'NX', microtime(true), $user->id]);
+
+        return response()->json(['result' => 'success']);
     }
 }

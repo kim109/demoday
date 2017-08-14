@@ -19,8 +19,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/main', 'MainController@index')->name('main');
-Route::get('/main/items', 'MainController@items');
-Route::post('/main/investment', 'MainController@investment');
+Route::get('/items', 'MainController@items');
+Route::post('/items/{id}/investment', 'MainController@investment')->where('id', '[0-9]+');
+Route::post('/items/{id}/event', 'MainController@event')->where('id', '[0-9]+');
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('/', 'SettingController@index')->name('admin');

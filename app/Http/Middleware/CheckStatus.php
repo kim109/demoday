@@ -6,7 +6,7 @@ use Auth;
 use App\Setting;
 use Closure;
 
-class CheckState
+class CheckStatus
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,9 @@ class CheckState
      */
     public function handle($request, Closure $next)
     {
-        $setting = Setting::findOrFail(1, ['state']);
+        $setting = Setting::findOrFail(1, ['status']);
 
-        if ($setting->state == 'ready') {
+        if ($setting->status == 'ready') {
             if (Auth::check()) {
                 Auth::logout();
             }

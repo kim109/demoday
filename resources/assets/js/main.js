@@ -45,7 +45,7 @@ const list = {
         }
     },
     beforeMount: function () {
-        axios.get('main/items')
+        axios.get('items')
             .then((response) => {
                 this.coin = response.data.coin;
                 this.items = response.data.items;
@@ -62,7 +62,8 @@ const view = {
     data: function() {
         return {
             investment: 0,
-            item : store.selected
+            eventEnable: true,
+            item: store.selected
         }
     },
     watch: {
@@ -98,7 +99,7 @@ const view = {
                 message: '투자금을 '+this.investment+'으로 설정하시겠습니까?',
                 callback: (index) => {
                     if (index == 1) {
-                        axios.post('main/investment', {'item':this.item.id, 'investment': this.investment})
+                        axios.post('items/'+this.item.id+'/investment', {'investment': this.investment})
                         .then((response) => {
                             store.selected.investment = this.investment;
                             ons.notification.toast({
@@ -124,7 +125,10 @@ const view = {
             });
         },
         event() {
-            alert('111');
+            axios.post('items/'+this.item.id+'/event')
+                .then((response) => {
+                    this.eventEnable = false;
+                });
         }
     },
     beforeMount: function () {
