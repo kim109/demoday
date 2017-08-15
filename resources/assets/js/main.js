@@ -1,20 +1,19 @@
-import ons from 'onsenui';
-import Vue from 'vue';
-import VueOnsen from 'vue-onsenui';
+import Vue from 'vue'
+import ons from 'onsenui'
+import VueOnsen from 'vue-onsenui'
+import axios from 'axios'
 
-window.axios = require('axios');
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// CSRT 토큰 설정
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
-
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 Vue.use(VueOnsen);
-
-var selected = null;
 
 const store = {
     coin: null,
@@ -75,7 +74,7 @@ const view = {
                 ons.notification.alert('최소 투자금은 91 입니다.');
                 this.investment = 91;
             } else if (this.balance < 0) {
-                let max = newValue+ this.balance;
+                let max = newValue + this.balance;
                 ons.notification.alert('J-Coin 잔여금이 모두 소진 되었습니다.<br>다른 PT 투자금을 하향 조정해주세요.');
                 this.investment = max;
             }
@@ -90,6 +89,15 @@ const view = {
                 }
             });
             return store.coin-consume-this.investment;
+        },
+        max: function() {
+            let consume = 0;
+            store.items.forEach((item) => {
+                if (item != this.item) {
+                    consume += parseInt(item.investment);
+                }
+            });
+            return (store.coin-consume > 91) ? 91 : store.coin-consume;
         }
     },
     methods: {
@@ -139,15 +147,7 @@ const view = {
 
 var vm = new Vue({
     el: '#app',
-    template: '#main',
-    data() {
-        return {
-            pageStack: [list],
-        };
-    },
-    methods: {
-        test(e) {
-            // console.dir(e.currentPage);
-        }
+    data: {
+        pageStack: [list],
     }
 });

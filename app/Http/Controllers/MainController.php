@@ -46,7 +46,7 @@ class MainController extends Controller
                 ['item_id', $item->id]
             ])->first(['investment']);
 
-             $item->investment = ($fund == null) ? 0 : $fund->investment;
+             $item->investment = ($fund == null) ? 0 : (int)$fund->investment;
         }
 
         return response()->json(['coin'=>$coin, 'items' => $items]);

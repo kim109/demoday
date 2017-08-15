@@ -107,7 +107,7 @@ class ItemController extends Controller
         } else {
             $rank = $item->event_rank;
             $result = Redis::command('ZRANGE', [$key, $rank-1, $rank-1]);
-            $user = empty($result) ? null : User::find($result[0]);
+            $user = empty($result) ? null : \App\User::find($result[0]);
 
             if ($user == null) {
                 $winner = null;

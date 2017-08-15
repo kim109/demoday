@@ -19,14 +19,20 @@ class ResultController extends Controller
             return response()->json(['errors' => 'invalid connection'], 406);
         }
         // 진행 상태 확인
-        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital']);
+        $settings = Setting::findOrFail(1);
         if ($settings->status != 'close') {
             return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
         }
 
         $users = \App\User::all();
         foreach ($users as $user) {
-            if ($user->funds->sum('investment') != $settings->supply) {
+            $coin = (int)$settings->supply;
+            foreach ($settings->experts as $expert) {
+                if ($expert['username'] == $user->username) {
+                    $coin = $coin * $setting->multiple;
+                }
+            }
+            if ($user->funds->sum('investment') != $coin) {
                 $user->funds()->delete();
             }
         }
