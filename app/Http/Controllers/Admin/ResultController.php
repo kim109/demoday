@@ -29,7 +29,7 @@ class ResultController extends Controller
             $coin = (int)$settings->supply;
             foreach ($settings->experts as $expert) {
                 if ($expert['username'] == $user->username) {
-                    $coin = $coin * $setting->multiple;
+                    $coin = $coin * $settings->multiple;
                 }
             }
             if ($user->funds->sum('investment') != $coin) {
@@ -51,7 +51,7 @@ class ResultController extends Controller
         }
 
         foreach ($results as $index => $result) {
-            $results[$index]['investment'] = round($result['coin'] * $settings->capital / $total);
+            $results[$index]['investment'] = $total == 0 ? 0 : round($result['coin'] * $settings->capital / $total);
         }
 
         return response()->json($results);

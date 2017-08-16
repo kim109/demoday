@@ -24,7 +24,7 @@ class MainController extends Controller
     public function items(Request $request)
     {
         if (!$request->ajax()) {
-            return reponse()->json(['errors' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
 
         $user = Auth::user();
@@ -55,7 +55,7 @@ class MainController extends Controller
     public function investment($id, Request $request)
     {
         if (!$request->ajax()) {
-            return reponse()->json(['errors' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
 
         $this->validate($request, [
@@ -69,7 +69,11 @@ class MainController extends Controller
 
         $user = Auth::user();
 
-        $setting = Setting::find(1, ['supply', 'experts', 'multiple']);
+        $setting = Setting::find(1, ['status', 'supply', 'experts', 'multiple']);
+        if ($setting->status != 'open') {
+            return response()->json(['errors' => ['모의 투자가 마감 되었습니다.']], 403);
+        }
+
         $coin = (int)$setting->supply;
         foreach ($setting->experts as $expert) {
             if ($expert['username'] == $user->username) {
@@ -97,7 +101,7 @@ class MainController extends Controller
     public function event($id, Request $request)
     {
         if (!$request->ajax()) {
-            return reponse()->json(['errors' => 'invalid connection'], 406);
+            return response()->json(['errors' => 'invalid connection'], 406);
         }
 
         $user = Auth::user();
