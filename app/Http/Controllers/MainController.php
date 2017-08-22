@@ -28,7 +28,7 @@ class MainController extends Controller
         }
 
         $user = Auth::user();
-        $setting = Setting::find(1, ['supply', 'experts', 'multiple']);
+        $setting = Setting::find(1, ['status', 'supply', 'experts', 'multiple']);
 
         $coin = (int)$setting->supply;
         foreach ($setting->experts as $expert) {
@@ -36,6 +36,12 @@ class MainController extends Controller
                 $coin = $coin * $setting->multiple;
             }
         }
+
+        $response = [
+            'status' => $setting->status,
+            'coin' => $coin,
+            'items' => []
+        ];
 
         $items = Item::all(['id', 'title', 'company', 'speaker', 'description']);
         foreach ($items as $item) {
@@ -48,8 +54,9 @@ class MainController extends Controller
 
              $item->investment = ($fund == null) ? 0 : (int)$fund->investment;
         }
+        $response['items'] = $items;
 
-        return response()->json(['coin'=>$coin, 'items' => $items]);
+        return response()->json($response);
     }
 
     public function investment($id, Request $request)

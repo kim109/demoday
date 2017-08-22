@@ -11,14 +11,11 @@ const { mix } = require('laravel-mix');
  |
  */
 
-// mix.js('resources/assets/js/app.js', 'public/js')
-//    .sass('resources/assets/sass/app.scss', 'public/css');
-
 mix.js('resources/assets/js/admin.js', 'public/js')
-    .js('resources/assets/js/main.js', 'public/js')
+   .js('resources/assets/js/agent.js', 'public/js')
    .less('resources/assets/less/admin.less', 'public/css')
-   .less('resources/assets/less/login.less', 'public/css')
-   .less('resources/assets/less/main.less', 'public/css');
+   .less('resources/assets/less/agent.less', 'public/css')
+   .less('resources/assets/less/login.less', 'public/css');
 
 if (mix.inProduction()) {
     mix.version();
