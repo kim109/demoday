@@ -28,7 +28,7 @@ class MainController extends Controller
         }
 
         $user = Auth::user();
-        $setting = Setting::find(1, ['status', 'supply', 'experts', 'multiple']);
+        $setting = Setting::find(1, ['status', 'supply']);
 
         $response = [
             'status' => $setting->status,
@@ -69,7 +69,7 @@ class MainController extends Controller
 
         $user = Auth::user();
 
-        $setting = Setting::find(1, ['status', 'supply', 'experts', 'multiple']);
+        $setting = Setting::find(1, ['status', 'supply']);
         if ($setting->status != 'open') {
             return response()->json(['errors' => ['모의 투자가 마감 되었습니다.']], 403);
         }
