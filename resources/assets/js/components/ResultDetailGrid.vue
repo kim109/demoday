@@ -4,7 +4,7 @@
             <li><a href="#" @click="overview">전체</a></li>
             <li class="active">
                 {{ result.title }}
-                <small>( {{ result.coin.toLocaleString() }} J-Coin
+                <small>( 일반 : {{ result.normal.toLocaleString() }} / 전문가 : {{ result.expert.toLocaleString() }}
                     <span class="hidden-xs">/ {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW'}) }}</span> )
                 </small>
             </li>
@@ -13,6 +13,11 @@
             <thead>
                 <tr>
                     <th class="text-center hidden-xs hidden-sm">No.</th>
+                    <th @click="sortBy('grade')">
+                        분류
+                        <span v-if="order.grade == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                        <span v-if="order.grade == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                    </th>
                     <th @click="sortBy('name')">
                         이름
                         <span v-if="order.name == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
@@ -33,10 +38,11 @@
             <tbody>
                 <tr v-for="(value, index) in data" :key="value.username">
                     <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
+                    <td>{{ value.grade }}</td>
                     <td>{{ value.name }}</td>
                     <td>{{ value.username }}</td>
                     <td class="text-right">
-                        {{ value.investment.toLocaleString() }}
+                        {{ value.investment }}
                     </td>
                 </tr>
             </tbody>
@@ -55,6 +61,7 @@
             return {
                 data: null,
                 order: {
+                    grade: null,
                     name: null,
                     username: null,
                     investment: null

@@ -41,7 +41,7 @@ var setting = new Vue({
         supply: null,
         capital: null,
         experts: null,
-        multiple: null,
+        ratio: null,
         status: null,
         items: null,
         item: {

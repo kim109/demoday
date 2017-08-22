@@ -42,13 +42,10 @@
                             <vue-slider ref="slider" v-model.number="investment" :disabled="close" :min="1" :max="max" :dot-size="25" tooltip="false"></vue-slider>
                         </div>
                     </div>
-                    <div class="panel-footer">
+                    <div class="panel-footer text-right">
                         <template v-if="!close">
-                            <div class="pull-right">
-                                <button type="button" class="btn btn-primary btn-sm" @click="save" :disabled="close">저장</button>
-                            </div>
-
-                            <button type="button" class="btn btn-default btn-sm" @click="event" :disabled="!eventEnable">상품 응모</button>
+                            <button type="button" class="btn btn-default btn-sm" @click="event" v-if="eventEnable">상품 응모</button>
+                            <button type="button" class="btn btn-primary btn-sm" @click="save" v-if="saveEnable">저장</button>
                         </template>
                         <template v-else>
                             투자가 마감되었습니다.
@@ -68,10 +65,16 @@
         data: function() {
             return {
                 investment: 0,
-                eventEnable: true
+                init: true
             }
         },
         computed: {
+            eventEnable() {
+                return this.init && this.item.investment == 0;
+            },
+            saveEnable() {
+                return !this.init || this.item.investment != 0;
+            },
             close() {
                 return this.$store.state.status == 'close';
             },
@@ -107,18 +110,29 @@
                     this.$http.post('items/'+this.item.id+'/investment', {'investment': this.investment})
                         .then((response) => {
                             this.item.investment = this.investment;
+                        })
+                        .catch((error) => {
+                            if (error.response) {
+                                if (error.response.status == 403) {
+                                    this.$store.commit('status', 'close');
+                                }
+                            }
                         });
                 }
             },
             event() {
                 this.$http.post('items/'+this.item.id+'/event')
                     .then((response) => {
-                        this.eventEnable = false;
+                        this.init = false;
                     });
             }
         },
         beforeMount: function () {
-            this.investment = this.item.investment;
+            if (this.item.investment == 0) {
+                this.investment = 1;
+            } else {
+                this.investment = this.item.investment;
+            }
         }
     }
 </script>

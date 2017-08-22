@@ -87,12 +87,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="capital" class="col-sm-3 col-md-4 control-label">전문가 투자 배수</label>
+                        <label for="capital" class="col-sm-3 col-md-4 control-label">전문가 할당 비율(%)</label>
                         <div class="col-sm-9 col-md-8">
                             <div class="input-group">
-                                <input type="number" class="form-control" min="1" max="10" v-model.number="multiple" :readonly="notReady">
+                                <input type="number" class="form-control" min="1" max="99" v-model.number="ratio" :readonly="notReady">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" @click="saveSetting('multiple')" :disabled="notReady">저장</button>
+                                    <button class="btn btn-default" @click="saveSetting('ratio')" :disabled="notReady">저장</button>
                                 </span>
                             </div>
                         </div>

@@ -12,10 +12,15 @@
                     <span v-if="order.title == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
                     <span v-if="order.title == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                 </th>
-                <th class="text-center hidden-xs" @click="sortBy('coin')">
-                    J-Coin 총 투자액
-                    <span v-if="order.coin == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                    <span v-if="order.coin == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                <th class="text-center hidden-xs" @click="sortBy('normal')">
+                    J-Coin 일반
+                    <span v-if="order.normal == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                    <span v-if="order.normal == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                </th>
+                <th class="text-center hidden-xs" @click="sortBy('expert')">
+                    J-Coin 전문가
+                    <span v-if="order.expert == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                    <span v-if="order.expert == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                 </th>
                 <th class="text-center" @click="sortBy('investment')">
                     실제 투자액
@@ -28,7 +33,8 @@
             <tr v-for="(result, index) in results" :key="result.id">
                 <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
                 <td><a href="#" @click="detail($event, result)">{{ result.title }}</a></td>
-                <td class="text-right hidden-xs">{{ result.coin.toLocaleString() }}</td>
+                <td class="text-right hidden-xs">{{ result.normal.toLocaleString() }}</td>
+                <td class="text-right hidden-xs">{{ result.expert.toLocaleString() }}</td>
                 <td class="text-right">
                     {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
                 </td>
@@ -38,7 +44,8 @@
             <tr>
                 <th class="hidden-xs hidden-sm"></th>
                 <th>총 투자금액</th>
-                <th class="text-right hidden-xs">{{ total.coin.toLocaleString() }}</th>
+                <th class="text-right hidden-xs">{{ total.normal.toLocaleString() }}</th>
+                <th class="text-right hidden-xs">{{ total.expert.toLocaleString() }}</th>
                 <th class="text-right">
                     {{ total.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
                 </th>
@@ -59,22 +66,25 @@
                 order: {
                     id: null,
                     title: null,
-                    coin: null,
+                    normal: null,
+                    expert: null,
                     investment: null
                 }
             }
         },
         computed: {
             total: function() {
-                var coin = 0;
+                var normal = 0;
+                var expert = 0;
                 var investment = 0;
 
                 this.results.forEach(function(result) {
-                    coin += result.coin;
+                    normal += result.normal;
+                    expert += result.expert;
                     investment += result.investment;
                 });
 
-                return {"coin":coin, "investment":investment};
+                return {"normal":normal, "expert":expert, "investment":investment};
             }
         },
         methods: {

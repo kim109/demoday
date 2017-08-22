@@ -24,34 +24,58 @@ class ResultController extends Controller
             return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
         }
 
-        $users = \App\User::all();
-        foreach ($users as $user) {
-            $coin = (int)$settings->supply;
-            foreach ($settings->experts as $expert) {
-                if ($expert['username'] == $user->username) {
-                    $coin = $coin * $settings->multiple;
-                }
-            }
-            if ($user->funds->sum('investment') != $coin) {
-                $user->funds()->delete();
-            }
+        $total = ['normal' => 0, 'expert' => 0];
+        $coin = (int)$settings->supply;
+        $experts = [];
+        foreach ($settings->experts as $expert) {
+            $experts[] = $expert['username'];
         }
-
-        $results = null;
-        $total = 0;
 
         $items = \App\Item::all(['id', 'title']);
 
-        foreach ($items as $index => $item) {
+        foreach ($items as $item) {
+            $index = $item->id;
             $results[$index]['id'] = $item->id;
             $results[$index]['title'] = $item->title;
-            $results[$index]['coin'] = $item->funds->sum('investment');
-
-            $total += $results[$index]['coin'];
+            $results[$index]['normal'] = 0;
+            $results[$index]['expert'] = 0;
         }
 
+        $users = \App\User::all();
+        foreach ($users as $user) {
+            if ($user->funds->sum('investment') != $coin || $user->funds->count() != $items->count()) {
+                $user->funds()->delete();
+                break;
+            }
+
+            foreach ($user->funds as $fund) {
+                $index = $fund->item_id;
+                if (in_array($user->username, $experts)) {
+                    $results[$index]['expert'] += $fund->investment;
+                    $total['expert'] += $fund->investment;
+                } else {
+                    $results[$index]['normal'] += $fund->investment;
+                    $total['normal'] += $fund->investment;
+                }
+            }
+        }
+
+        $results = array_values($results);
+
         foreach ($results as $index => $result) {
-            $results[$index]['investment'] = $total == 0 ? 0 : round($result['coin'] * $settings->capital / $total);
+            $investment = 0;
+
+            if ($total['normal'] != 0) {
+                $capital = $settings->capital *  (1 - $settings->ratio * 0.01);
+                $investment += ($capital *  $results[$index]['normal'] / $total['normal']);
+            }
+
+            if ($total['expert'] != 0) {
+                $capital = $settings->capital *  ($settings->ratio * 0.01);
+                $investment += ($capital *  $results[$index]['expert'] / $total['expert']);
+            }
+
+            $results[$index]['investment'] = $investment;
         }
 
         return response()->json($results);
@@ -63,9 +87,14 @@ class ResultController extends Controller
             return response()->json(['errors' => 'invalid connection'], 406);
         }
         // 진행 상태 확인
-        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital']);
+        $settings = Setting::findOrFail(1, ['status', 'experts']);
         if ($settings->status != 'close') {
             return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
+        }
+
+        $experts = [];
+        foreach ($settings->experts as $expert) {
+            $experts[] = $expert['username'];
         }
 
         $results = null;
@@ -74,7 +103,8 @@ class ResultController extends Controller
             $results[] = [
                 'name' => $fund->user->name,
                 'username' => $fund->user->username,
-                'investment' => $fund->investment
+                'grade' => in_array($fund->user->username, $experts) ? '전문가' : '일반',
+                'investment' => (int)$fund->investment
             ];
         }
 

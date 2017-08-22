@@ -53,7 +53,7 @@ class SettingController extends Controller
         if (!$request->ajax()) {
             return response()->json(['errors' => 'invalid connection'], 406);
         }
-        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital', 'experts', 'multiple']);
+        $settings = Setting::findOrFail(1, ['status', 'supply', 'capital', 'experts', 'ratio']);
         $repsonse = $settings->toArray();
         $items = Item::all();
         $repsonse['items'] = $items->toArray();
@@ -69,12 +69,12 @@ class SettingController extends Controller
         $this->validate($request, [
             'supply' => 'integer|min:1',
             'capital' => 'integer|min:1',
-            'multiple' => 'integer|min:1',
+            'ratio' => 'integer|min:1|max:99',
             'status' => 'in:ready,open,close'
         ], [], [
             'supply' => '개인별 지급 J-Coin',
             'capital' => '실제 투자액',
-            'multiple' => '전문가 투자 배수'
+            'ratio' => '전문가 전체 투자금 할당 비율'
         ]);
 
         $setting = Setting::find(1);
@@ -88,8 +88,8 @@ class SettingController extends Controller
         if ($request->has('experts') && $setting->status == 'ready') {
             $setting->experts = $request->input('experts');
         }
-        if ($request->has('multiple') && $setting->status == 'ready') {
-            $setting->multiple = $request->input('multiple');
+        if ($request->has('ratio') && $setting->status == 'ready') {
+            $setting->ratio = $request->input('ratio');
         }
         if ($request->has('status')) {
             $setting->status = $request->input('status');
@@ -105,9 +105,9 @@ class SettingController extends Controller
         $setting = Setting::find(1);
         $setting->status = 'ready';
         $setting->supply = 100;
-        $setting->capital = 10000000;
+        $setting->capital = 30000000;
         $setting->experts = null;
-        $setting->multiple = null;
+        $setting->ratio = 50;
         $setting->save();
 
         Item::truncate();

@@ -19,7 +19,7 @@ class CreateSettingsTable extends Migration
             $table->unsignedSmallInteger('supply')->comment('개일별 지급 J-COIN');
             $table->unsignedInteger('capital')->comment('실제 투자액');
             $table->text('experts')->nullable()->comment('전문가 아이디');
-            $table->unsignedSmallInteger('multiple')->nullable()->comment('전문가 투자배수');
+            $table->unsignedTinyInteger('ratio')->default(50)->comment('전문가 투자배수');
             $table->timestamps();
         });
     }

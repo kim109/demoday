@@ -30,16 +30,9 @@ class MainController extends Controller
         $user = Auth::user();
         $setting = Setting::find(1, ['status', 'supply', 'experts', 'multiple']);
 
-        $coin = (int)$setting->supply;
-        foreach ($setting->experts as $expert) {
-            if ($expert['username'] == $user->username) {
-                $coin = $coin * $setting->multiple;
-            }
-        }
-
         $response = [
             'status' => $setting->status,
-            'coin' => $coin,
+            'coin' => (int)$setting->supply,
             'items' => []
         ];
 
@@ -82,12 +75,6 @@ class MainController extends Controller
         }
 
         $coin = (int)$setting->supply;
-        foreach ($setting->experts as $expert) {
-            if ($expert['username'] == $user->username) {
-                $coin = $coin * $setting->multiple;
-            }
-        }
-
         $consume = Fund::where([
             ['user_id', $user->id],
             ['item_id', '!=', $id]

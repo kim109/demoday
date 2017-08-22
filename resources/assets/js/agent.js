@@ -63,6 +63,9 @@ const store = new Vuex.Store({
         state.status = payload.status;
         state.coin = payload.coin;
         state.items = payload.items;
+      },
+      status (state, payload) {
+        state.status = payload;
       }
     }
 })
