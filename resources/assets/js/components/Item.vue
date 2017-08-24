@@ -31,7 +31,7 @@
                     <label class="col-sm-3 control-label"><span class="hidden-sm">출석 </span>이벤트</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input type="number" min="1" max="300" class="form-control" :readonly="!this.enableOpen" v-model="item.event_rank">
+                            <input type="number" min="1" max="300" class="form-control" :readonly="!this.enableOpen" v-model="item.event_rank" @keyup.enter="eventOpen">
                             <span class="input-group-btn">
                                 <button class="btn btn-sm btn-success" :disabled="!this.enableOpen" @click="eventOpen">
                                     <span class="hidden-sm">이벤트 </span>시작

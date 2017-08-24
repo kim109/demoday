@@ -1,57 +1,44 @@
 <template>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th class="text-center hidden-xs hidden-sm" @click="sortBy('id')">
-                    No.
-                    <span v-if="order.id == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                    <span v-if="order.id == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-                </th>
-                <th class="text-center" @click="sortBy('title')">
-                    PT
-                    <span v-if="order.title == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                    <span v-if="order.title == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-                </th>
-                <th class="text-center hidden-xs" @click="sortBy('normal')">
-                    J-Coin 일반
-                    <span v-if="order.normal == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                    <span v-if="order.normal == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-                </th>
-                <th class="text-center hidden-xs" @click="sortBy('expert')">
-                    J-Coin 전문가
-                    <span v-if="order.expert == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                    <span v-if="order.expert == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-                </th>
-                <th class="text-center" @click="sortBy('investment')">
-                    실제 투자액
-                    <span v-if="order.investment == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                    <span v-if="order.investment == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(result, index) in results" :key="result.id">
-                <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
-                <td>{{ result.title }}</td>
-                <td class="text-right hidden-xs">{{ result.normal.toLocaleString() }}</td>
-                <td class="text-right hidden-xs">{{ result.expert.toLocaleString() }}</td>
-                <td class="text-right">
-                    {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <th class="hidden-xs hidden-sm"></th>
-                <th>총 투자금액</th>
-                <th class="text-right hidden-xs">{{ total.normal.toLocaleString() }}</th>
-                <th class="text-right hidden-xs">{{ total.expert.toLocaleString() }}</th>
-                <th class="text-right">
-                    {{ total.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
-                </th>
-            </tr>
-        </tfoot>
-    </table>
+    <transition name="slide">
+        <table class="table table-striped fixed">
+            <thead>
+                <tr>
+                    <th @click="sortBy('title')">
+                        PT
+                        <span v-if="order.title == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                        <span v-if="order.title == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                    </th>
+                    <th class="text-center" style="width:4em;">일반</th>
+                    <th class="text-center" style="width:4em;">전문가</th>
+                    <th class="text-center" style="width:8em;" @click="sortBy('investment')">
+                        실제 투자액
+                        <span v-if="order.investment == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                        <span v-if="order.investment == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(result, index) in results" :key="result.id">
+                    <td class="title">{{ result.title }}</td>
+                    <td class="text-right">{{ result.normal.toLocaleString() }}</td>
+                    <td class="text-right">{{ result.expert.toLocaleString() }}</td>
+                    <td class="text-right">
+                        {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>총 투자금액</th>
+                    <th class="text-right">{{ total.normal.toLocaleString() }}</th>
+                    <th class="text-right">{{ total.expert.toLocaleString() }}</th>
+                    <th class="text-right">
+                        {{ total.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </transition>
 </template>
 
 <script>
@@ -111,3 +98,16 @@
         }
     }
 </script>
+
+<style>
+    table.fixed {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    td.title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
