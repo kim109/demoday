@@ -81,6 +81,7 @@ var setting = new Vue({
                                 }
                             });
                     });
+                alert('리셋 되었습니다.');
             }
         },
         saveSetting: function (type) {

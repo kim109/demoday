@@ -39,13 +39,13 @@
                     <div class="panel-body">
                         <h5 class="text-center">잔여 코인 : {{ balance }} / 투자 금액 : <strong>{{ investment }}</strong></h5>
                         <div class="slider">
-                            <vue-slider ref="slider" v-model.number="investment" :disabled="close" :min="1" :max="max" :dot-size="25" tooltip="false"></vue-slider>
+                            <vue-slider ref="slider" v-model.number="investment" :disabled="!sliderEnable" :min="1" :max="max" :dot-size="25" tooltip="false"></vue-slider>
                         </div>
                     </div>
                     <div class="panel-footer text-right">
-                        <template v-if="!close">
+                        <template v-if="$store.state.status != 'close'">
                             <button type="button" class="btn btn-default btn-sm" @click="event" v-if="eventEnable">상품 응모</button>
-                            <button type="button" class="btn btn-primary btn-sm" @click="save" v-if="saveEnable">저장</button>
+                            <button type="button" class="btn btn-primary btn-sm" @click="save" v-if="saveEnable" :disabled="investment == this.item.investment">저장</button>
                         </template>
                         <template v-else>
                             투자가 마감되었습니다.
@@ -75,8 +75,8 @@
             saveEnable() {
                 return !this.init || this.item.investment != 0;
             },
-            close() {
-                return this.$store.state.status == 'close';
+            sliderEnable() {
+                return this.saveEnable && this.$store.state.status != 'close';
             },
             item() {
                 let index = this.$route.params.index;
@@ -110,6 +110,7 @@
                     this.$http.post('items/'+this.item.id+'/investment', {'investment': this.investment})
                         .then((response) => {
                             this.item.investment = this.investment;
+                            this.$router.go(-1);
                         })
                         .catch((error) => {
                             if (error.response) {
@@ -167,20 +168,5 @@
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: center;
-    }
-
-    dl {
-        margin-bottom: 10px;
-    }
-    dl.dl-horizontal dt {
-        float: left;
-        width: 50px;
-    }
-    dl.dl-horizontal dd {
-        margin-left: 60px;
-    }
-
-    .slider {
-        margin: 25px 0;
     }
 </style>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Redis;
 use App\Setting;
 use App\Item;
 use Illuminate\Http\Request;
@@ -102,15 +103,20 @@ class SettingController extends Controller
 
     public function reset(Request $request)
     {
+        // 설정 상태 준비중으로
         $setting = Setting::find(1);
         $setting->status = 'ready';
-        $setting->supply = 100;
-        $setting->capital = 30000000;
-        $setting->experts = null;
-        $setting->ratio = 50;
         $setting->save();
 
-        Item::truncate();
+        // 이벤트 내용 삭제
+        Item::query()->update([
+            'event_open' => false,
+            'event_rank' => null,
+            'event_winner' => null
+        ]);
+        Redis::command('flushdb');
+
+        // 투자금 내역 삭제
         \App\Fund::truncate();
 
         return response()->json(['result' => 'success']);

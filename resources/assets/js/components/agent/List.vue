@@ -17,16 +17,24 @@
                 <li v-for="(item, index) in items" :key="index">
                     <div class="item">
                         <router-link :to="{ name: 'item', params: { index: index }}">
-                            <div class="item-title"><strong>{{ item.title }}</strong></div>
-                            <div class="item-subtitle small">투자금 : {{ item.investment }} ({{ (item.investment/coin*100).toFixed(2) }}%)</div>
+                            <div class="pull-right">
+                                <span class="text-danger" v-if="item.investment == 0">[미완료]</span>
+                                <span class="text-muted" v-else>[완료]</span>
+                            </div>
+                            <div class="item-title">
+                                <strong>{{ item.title }}</strong>
+                            </div>
+                            <div class="item-subtitle small">
+                                투자금 : {{ item.investment }} ({{ (item.investment/coin*100).toFixed(2) }}%)
+                            </div>
                         </router-link>
                     </div>
                 </li>
             </ul>
         </div>
 
-        <div class="container">
-            <button type="button" class="btn btn-primary btn-block">결과 확인</button>
+        <div class="container" v-if="complete">
+            <button type="button" class="btn btn-primary btn-block" @click="result">결과 확인</button>
         </div>
     </div>
 </template>
@@ -39,6 +47,24 @@
             },
             coin () {
                 return this.$store.state.coin;
+            },
+            complete () {
+                let items = this.$store.state.items;
+                var result = true;
+                if (Array.isArray(items)) {
+                    items.some((item) => {
+                        if (item.investment == 0) {
+                            result = false;
+                            return true;
+                        }
+                    });
+                }
+                return result;
+            }
+        },
+        methods: {
+            result () {
+                alert('11');
             }
         }
     }
@@ -65,6 +91,10 @@
     .list-block ul li a {
         text-decoration: none;
         color: #333333;
+    }
+
+    .list-block ul li .pull-right {
+        line-height: 36px;
     }
 
     .list-block ul li .item-title {

@@ -98,6 +98,11 @@ class MainController extends Controller
             return response()->json(['errors' => 'invalid connection'], 406);
         }
 
+        $item = Item::find($id);
+        if (!$item->event_open) {
+            return response()->json(['errors' => '이벤트가 시작되지 않았습니다.'], 401);
+        }
+
         $user = Auth::user();
         $key = 'Item:'.$id.':Event';
         Redis::command('ZADD', [$key, 'NX', microtime(true), $user->id]);
