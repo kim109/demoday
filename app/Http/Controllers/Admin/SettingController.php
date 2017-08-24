@@ -93,6 +93,16 @@ class SettingController extends Controller
             $setting->ratio = $request->input('ratio');
         }
         if ($request->has('status')) {
+            if ($request->input('status') == 'close') {
+                $users = \App\User::all();
+                $coin = $setting->supply;
+                $count = Item::count();
+                foreach ($users as $user) {
+                    if ($user->funds->sum('investment') != $coin || $user->funds->count() != $count) {
+                        $user->funds()->delete();
+                    }
+                }
+            }
             $setting->status = $request->input('status');
         }
 

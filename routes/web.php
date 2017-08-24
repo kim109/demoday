@@ -11,17 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    $uri = Auth::check() ? 'main' : 'login';
-    return redirect($uri);
-});
+Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('/login', 'Auth\LoginController@login');
+Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
-Auth::routes();
-
-Route::get('/main', 'MainController@index')->name('main');
+Route::get('/', 'MainController@index')->name('main');
 Route::get('/items', 'MainController@items');
 Route::post('/items/{id}/investment', 'MainController@investment')->where('id', '[0-9]+');
 Route::post('/items/{id}/event', 'MainController@event')->where('id', '[0-9]+');
+Route::get('/status', 'MainController@status');
+Route::get('/results', 'MainController@results');
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('/', 'SettingController@index')->name('admin');

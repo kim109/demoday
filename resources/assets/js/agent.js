@@ -32,12 +32,14 @@ Vue.prototype.$http = axios;
 
 Vue.component('list', require('./components/agent/List.vue'))
 Vue.component('item', require('./components/agent/Item.vue'))
+Vue.component('result', require('./components/agent/Result.vue'))
 
 const router = new VueRouter({
     // mode: 'history',
     routes: [
         { path: '/list', name: 'list', component: Vue.component('list') },
-        { path: '/item/:index(\\d+)', name: 'item', component: Vue.component('item') }
+        { path: '/item/:index(\\d+)', name: 'item', component: Vue.component('item') },
+        { path: '/result', name: 'result', component: Vue.component('result') }
     ]
 })
 
@@ -59,20 +61,44 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-      init (state, payload) {
-        state.status = payload.status;
-        state.coin = payload.coin;
-        state.items = payload.items;
-      },
-      status (state, payload) {
-        state.status = payload;
-      }
+        init (state, payload) {
+            state.status = payload.status;
+            state.coin = payload.coin;
+            state.items = payload.items;
+        },
+        status (state, payload) {
+            state.status = payload;
+        }
     }
 })
 
 const app = new Vue({
     router,
     store,
+    data: {
+        title: 'Together JiranFamily DemoDay'
+    },
+    watch: {
+        '$route' (to, from) {
+            let last = to.path.split('/').pop();
+
+            if (/^\d+$/.test(last)) {
+                last = parseInt(last);
+                this.title = this.$store.state.items[last].title;
+            } else {
+                this.title = 'Together JiranFamily DemoDay'
+            }
+        }
+    },
+    methods: {
+        logout: function (event) {
+            event.preventDefault();
+
+            if (window.confirm('로그아웃 하시겠습니까?')) {
+                document.getElementById('logout').submit();
+            }
+        }
+    },
     beforeMount: function () {
         axios.get('items').then((response) => {
             store.commit('init', response.data);

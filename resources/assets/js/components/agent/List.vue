@@ -1,13 +1,5 @@
 <template>
     <div>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/main">Together JiranFamily DemoDay</a>
-                </div>
-            </div>
-        </nav>
-
         <h4 class="text-center">
             지급된 Coin : {{ coin.toLocaleString() }} / 잔여코인 : <strong>{{ this.$store.getters.balance.toLocaleString() }}</strong>
         </h4>
@@ -49,22 +41,34 @@
                 return this.$store.state.coin;
             },
             complete () {
-                let items = this.$store.state.items;
-                var result = true;
-                if (Array.isArray(items)) {
-                    items.some((item) => {
-                        if (item.investment == 0) {
-                            result = false;
-                            return true;
-                        }
-                    });
+                if (this.$store.getters.balance == 0) {
+                    let items = this.$store.state.items;
+                    var result = true;
+                    if (Array.isArray(items)) {
+                        items.some((item) => {
+                            if (item.investment == 0) {
+                                result = false;
+                                return true;
+                            }
+                        });
+                    }
+                    return result;
+                } else {
+                    return false;
                 }
-                return result;
             }
         },
         methods: {
             result () {
-                alert('11');
+                this.$http.get('status').then((response) => {
+                    this.$store.commit('status',response.data.status);
+
+                    if (response.data.status != 'close') {
+                        alert('투자가 마감되지 않았습니다.');
+                    } else {
+                        this.$router.push('/result');
+                    }
+                })
             }
         }
     }

@@ -41,22 +41,15 @@ class ResultController extends Controller
             $results[$index]['expert'] = 0;
         }
 
-        $users = \App\User::all();
-        foreach ($users as $user) {
-            if ($user->funds->sum('investment') != $coin || $user->funds->count() != $items->count()) {
-                $user->funds()->delete();
-                break;
-            }
-
-            foreach ($user->funds as $fund) {
-                $index = $fund->item_id;
-                if (in_array($user->username, $experts)) {
-                    $results[$index]['expert'] += $fund->investment;
-                    $total['expert'] += $fund->investment;
-                } else {
-                    $results[$index]['normal'] += $fund->investment;
-                    $total['normal'] += $fund->investment;
-                }
+        $funds = \App\Fund::all();
+        foreach ($funds as $fund) {
+            $index = $fund->item_id;
+            if (in_array($fund->user->username, $experts)) {
+                $results[$index]['expert'] += $fund->investment;
+                $total['expert'] += $fund->investment;
+            } else {
+                $results[$index]['normal'] += $fund->investment;
+                $total['normal'] += $fund->investment;
             }
         }
 

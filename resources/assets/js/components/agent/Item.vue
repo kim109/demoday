@@ -1,19 +1,6 @@
 <template>
     <transition name="slide">
         <div>
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <div class="left">
-                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"  @click="$router.go(-1)"></span>
-                        </div>
-                        <div class="center">
-                            {{ item.title }}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
             <div class="container">
                 <div class="panel panel-default">
                     <div class="panel-body">

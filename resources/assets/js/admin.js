@@ -80,8 +80,8 @@ var setting = new Vue({
                                     this[key] = response.data[key];
                                 }
                             });
+                        alert('리셋 되었습니다.');
                     });
-                alert('리셋 되었습니다.');
             }
         },
         saveSetting: function (type) {
