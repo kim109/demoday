@@ -39,8 +39,8 @@ class EventWinner implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'id' => $this->winner->username,
-            'name' => $this->winner->name
+            'id' => $this->winner->username ?? null,
+            'name' => $this->winner->name ?? null
         ];
     }
 }

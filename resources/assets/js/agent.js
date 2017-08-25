@@ -32,9 +32,12 @@ axios.interceptors.response.use(null, function(error) {
     return Promise.reject(error);
 });
 
+window.Pusher = require('pusher-js');
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'e9fea37b5e6836c20abf'
+    key: 'e9fea37b5e6836c20abf',
+    cluster: 'ap1',
+    encrypted: true
 });
 
 Vue.prototype.$http = axios;
