@@ -1,6 +1,14 @@
 @extends('layout')
 
 @push('stylesheets')
+    <meta name="theme-color" content="#E95420">
+    <link rel="manifest" href="/manifest.json">
+
+    <link rel="apple-touch-icon" href="/images/logo-144x144.png">
+    <link rel="apple-touch-startup-image" href="/images/apple-touch-startup-image.png">
+    <meta name="apple-mobile-web-app-title" content="DemoDay">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <link rel="stylesheet" href="{{ mix('/css/login.css') }}">
 @endpush
 
