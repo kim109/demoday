@@ -123,14 +123,15 @@ const app = new Vue({
         this.$router.replace('/list');
     },
     mounted: function () {
-        Echo.channel('demoday')
-        .listen('EventWinner', (e) => {
-            if (store.state.user == e.id) {
-                alert('당첨 되었습니다!');
-            }
-        })
-        .listen('InvestClosed', (e) => {
-            this.$router.push('/result');
-        });
+        let self = this;
+        window.Echo.channel('demoday')
+            .listen('.winner', function (e) {
+                if (e.id == self.$store.state.user) {
+                    alert(e.name+'님이 당첨 되었습니다!');
+                }
+            })
+            .listen('.closed', function (e) {
+                self.$router.push('/result');
+            });
     }
 }).$mount('#app')

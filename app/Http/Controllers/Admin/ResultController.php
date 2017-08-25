@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Setting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Events\InvesetClosed;
+use App\Events\InvestClosed;
 
 class ResultController extends Controller
 {
@@ -73,7 +73,7 @@ class ResultController extends Controller
         }
 
         // Pusher
-        event(new InvesetClosed());
+        event(new InvestClosed());
 
         return response()->json($results);
     }

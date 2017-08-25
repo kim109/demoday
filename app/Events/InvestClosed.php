@@ -31,6 +31,11 @@ class InvestClosed implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('demoday');
+        return new Channel('demoday');
+    }
+
+    public function broadcastAs()
+    {
+        return 'closed';
     }
 }
