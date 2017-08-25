@@ -31,6 +31,7 @@ class MainController extends Controller
         $setting = Setting::find(1, ['status', 'supply']);
 
         $response = [
+            'user' => $user->username,
             'status' => $setting->status,
             'coin' => (int)$setting->supply,
             'items' => []
@@ -117,7 +118,7 @@ class MainController extends Controller
         }
 
         $setting = Setting::find(1, ['status']);
-        
+
         return response()->json(['status' => $setting->status]);
     }
 

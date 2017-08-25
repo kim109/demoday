@@ -1,7 +1,11 @@
+require('es6-promise').polyfill()
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import axios from 'axios'
+import { sync } from 'vuex-router-sync'
+import Echo from 'laravel-echo'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
@@ -28,6 +32,11 @@ axios.interceptors.response.use(null, function(error) {
     return Promise.reject(error);
 });
 
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: 'e9fea37b5e6836c20abf'
+});
+
 Vue.prototype.$http = axios;
 
 Vue.component('list', require('./components/agent/List.vue'))
@@ -45,6 +54,7 @@ const router = new VueRouter({
 
 const store = new Vuex.Store({
     state: {
+        user: null,
         status: null,
         coin: 0,
         items: null
@@ -62,6 +72,7 @@ const store = new Vuex.Store({
     },
     mutations: {
         init (state, payload) {
+            state.user = payload.user;
             state.status = payload.status;
             state.coin = payload.coin;
             state.items = payload.items;
@@ -71,6 +82,8 @@ const store = new Vuex.Store({
         }
     }
 })
+
+sync(store, router);
 
 const app = new Vue({
     router,
@@ -105,5 +118,16 @@ const app = new Vue({
         });
 
         this.$router.replace('/list');
+    },
+    mounted: function () {
+        Echo.channel('demoday')
+        .listen('EventWinner', (e) => {
+            if (store.state.user == e.id) {
+                alert('당첨 되었습니다!');
+            }
+        })
+        .listen('InvestClosed', (e) => {
+            this.$router.push('/result');
+        });
     }
 }).$mount('#app')

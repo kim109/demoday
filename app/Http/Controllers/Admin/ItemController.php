@@ -6,6 +6,7 @@ use Redis;
 use App\Item;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Events\EventWinner;
 
 class ItemController extends Controller
 {
@@ -118,6 +119,9 @@ class ItemController extends Controller
             $item->event_open = false;
             $item->event_winner = $winner;
             $item->save();
+
+            // Pusher
+            event(new EventWinner($user));
 
             $response['winner'] = $winner;
         }
