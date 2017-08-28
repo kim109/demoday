@@ -95,6 +95,7 @@
             this.$http.get('admin/results/'+this.result.id)
                 .then((response) => {
                     this.data = response.data;
+                    this.sortBy('investment');
                 });
         }
     }

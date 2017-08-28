@@ -79,16 +79,20 @@
                 return this.$store.state.coin-consume-this.investment;
             },
             max: function() {
-                let half = Math.round(this.$store.state.coin / 2);
+                if (this.item.company != this.$store.state.user.company) {
+                    let half = Math.round(this.$store.state.coin / 2);
 
-                let balance = this.$store.state.coin;
-                this.$store.state.items.forEach((item) => {
-                    if (item != this.item) {
-                        balance -= parseInt(item.investment);
-                    }
-                });
+                    let balance = this.$store.state.coin;
+                    this.$store.state.items.forEach((item) => {
+                        if (item != this.item) {
+                            balance -= parseInt(item.investment);
+                        }
+                    });
 
-                return (balance > half) ? half : balance;
+                    return (balance > half) ? half : balance;
+                } else {
+                    return 1;
+                }
             }
         },
         methods: {

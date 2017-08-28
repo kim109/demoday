@@ -241,6 +241,7 @@ return [
 
         'username' => 'cn',
         'name' => 'sn',
+        'company' => 'company',
         'title' => 'title',
 
     ],

@@ -126,7 +126,7 @@ const app = new Vue({
         let self = this;
         window.Echo.channel('demoday')
             .listen('.winner', function (e) {
-                if (e.id == self.$store.state.user) {
+                if (e.id == self.$store.state.user.username) {
                     alert(e.name+'님이 당첨 되었습니다!');
                 }
             })
