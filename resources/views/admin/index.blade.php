@@ -179,7 +179,7 @@
                     </div>
                     <div class="modal-body">
                         <transition name="result-fade" mode="out-in">
-                            <result-grid v-if="results != null && selectedResult == null" v-on:detail="showResultDetail" :results="results"></result-grid>
+                            <result-grid v-if="results != null && selectedResult == null" v-on:detail="showResultDetail"></result-grid>
                             <result-detail-grid  v-if="selectedResult != null" v-on:overview="selectedResult = null" :result="selectedResult"></result-detail-grid>
                         </transition>
                     </div>

@@ -55,6 +55,9 @@ class SettingController extends Controller
             return response()->json(['errors' => 'invalid connection'], 406);
         }
         $settings = Setting::findOrFail(1, ['status', 'supply', 'capital', 'experts', 'ratio']);
+        if ($settings->status == 'result') {
+            $settings->status = 'close';
+        }
         $repsonse = $settings->toArray();
         $items = Item::all();
         $repsonse['items'] = $items->toArray();

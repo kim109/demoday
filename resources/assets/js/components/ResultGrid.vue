@@ -56,19 +56,15 @@
 
 <script>
     export default {
-        props: {
-            results: {
-                required: true
-            }
-        },
         data: function() {
             return {
+                results: null,
                 order: {
                     id: null,
                     title: null,
                     normal: null,
                     expert: null,
-                    investment: null
+                    investment: -1
                 }
             }
         },
@@ -78,11 +74,13 @@
                 var expert = 0;
                 var investment = 0;
 
-                this.results.forEach(function(result) {
-                    normal += result.normal;
-                    expert += result.expert;
-                    investment += result.investment;
-                });
+                if (Array.isArray(this.results)) {
+                    this.results.forEach(function(result) {
+                        normal += result.normal;
+                        expert += result.expert;
+                        investment += result.investment;
+                    });
+                }
 
                 return {"normal":normal, "expert":expert, "investment":investment};
             }
@@ -109,6 +107,13 @@
                 event.preventDefault();
                 this.$emit('detail', result);
             }
+        },
+        mounted: function () {
+            this.$http.get('admin/results')
+                .then((response) => {
+                    this.results = response.data;
+                    this.sortBy('investment');
+                });
         }
     }
 </script>

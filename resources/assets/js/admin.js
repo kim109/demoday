@@ -131,11 +131,8 @@ var setting = new Vue({
             this.items.splice(index, 1);
         },
         showResult: function () {
-            this.$http.get('admin/results')
-                .then((response) => {
-                    this.results = response.data;
-                    $('#modal').modal('show');
-                });
+            this.results = true;
+            $('#modal').modal('show');
         },
         showResultDetail: function(item) {
             this.selectedResult = item;

@@ -3,6 +3,8 @@
         <h4 class="text-center">
             지급된 Coin : {{ coin.toLocaleString() }} / 잔여코인 : <strong>{{ this.$store.getters.balance.toLocaleString() }}</strong>
         </h4>
+        <p class="text-center text-success" v-if="complete">* 최종 투자 가능</p>
+        <p class="text-center text-danger" v-else>* 투자가 완료되지 않아, 투자 내용이 반영되지 않음</p>
 
         <div class="list-block">
             <ul class="list-unstyled">
@@ -63,9 +65,11 @@
                 this.$http.get('status').then((response) => {
                     this.$store.commit('status',response.data.status);
 
-                    if (response.data.status != 'close') {
+                    if (response.data.status == 'open') {
                         alert('투자가 마감되지 않았습니다.');
-                    } else {
+                    } else if (response.data.status == 'close') {
+                        alert('투자내역을 집계 중입니다.');
+                    } else if (response.data.status == 'result') {
                         this.$router.push('/result');
                     }
                 })

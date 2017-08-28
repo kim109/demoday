@@ -3,14 +3,9 @@
         <table class="table table-striped fixed">
             <thead>
                 <tr>
-                    <th @click="sortBy('title')">
-                        PT
-                        <span v-if="order.title == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                        <span v-if="order.title == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-                    </th>
-                    <th class="text-center" style="width:4em;">일반</th>
-                    <th class="text-center" style="width:4em;">전문가</th>
-                    <th class="text-center" style="width:8em;" @click="sortBy('investment')">
+                    <th>PT</th>
+                    <th style="width:6.5em;">모의 투자액</th>
+                    <th style="width:8em;" @click="sortBy('investment')">
                         실제 투자액
                         <span v-if="order.investment == 1" class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
                         <span v-if="order.investment == -1" class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
@@ -20,8 +15,7 @@
             <tbody>
                 <tr v-for="(result, index) in results" :key="result.id">
                     <td class="title">{{ result.title }}</td>
-                    <td class="text-right">{{ result.normal.toLocaleString() }}</td>
-                    <td class="text-right">{{ result.expert.toLocaleString() }}</td>
+                    <td class="text-right">{{ (result.normal+result.expert).toLocaleString() }}</td>
                     <td class="text-right">
                         {{ result.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
                     </td>
@@ -30,8 +24,7 @@
             <tfoot>
                 <tr>
                     <th>총 투자금액</th>
-                    <th class="text-right">{{ total.normal.toLocaleString() }}</th>
-                    <th class="text-right">{{ total.expert.toLocaleString() }}</th>
+                    <th class="text-right">{{ (total.normal+total.expert).toLocaleString() }}</th>
                     <th class="text-right">
                         {{ total.investment.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}
                     </th>
@@ -51,7 +44,7 @@
                     title: null,
                     normal: null,
                     expert: null,
-                    investment: null
+                    investment: -1
                 }
             }
         },
@@ -93,7 +86,8 @@
         },
         beforeMount: function () {
             this.$http.get('results').then((response) => {
-                this.results = response.data
+                this.results = response.data;
+                this.sortBy('investment');
             });
         }
     }

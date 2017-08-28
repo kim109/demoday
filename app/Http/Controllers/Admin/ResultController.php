@@ -21,7 +21,7 @@ class ResultController extends Controller
         }
         // 진행 상태 확인
         $settings = Setting::findOrFail(1);
-        if ($settings->status != 'close') {
+        if (!in_array($settings->status, ['close', 'result'])) {
             return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
         }
 
@@ -75,6 +75,9 @@ class ResultController extends Controller
         // Pusher
         event(new InvestClosed());
 
+        $settings->status = 'result';
+        $settings->save();
+
         return response()->json($results);
     }
 
@@ -85,8 +88,8 @@ class ResultController extends Controller
         }
         // 진행 상태 확인
         $settings = Setting::findOrFail(1, ['status', 'experts']);
-        if ($settings->status != 'close') {
-            return reponse()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
+        if ($settings->status != 'result') {
+            return response()->json(['errors' => '투자가 마감되지 않았습니다.'], 406);
         }
 
         $experts = [];
@@ -97,12 +100,13 @@ class ResultController extends Controller
         $results = null;
         $funds = \App\Fund::where('item_id', $id)->get();
         foreach ($funds as $fund) {
-            $results[] = [
-                'name' => $fund->user->name,
-                'username' => $fund->user->username,
-                'grade' => in_array($fund->user->username, $experts) ? '전문가' : '일반',
-                'investment' => (int)$fund->investment
-            ];
+            if (!in_array($fund->user->username, $experts)) {
+                $results[] = [
+                    'name' => $fund->user->name,
+                    'username' => $fund->user->username,
+                    'investment' => (int)$fund->investment
+                ];
+            }
         }
 
         return response()->json($results);
