@@ -31,8 +31,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(value, index) in data" :key="value.username">
-                    <td class="text-center hidden-xs hidden-sm">{{ index+1 }}</td>
+                <tr v-for="(value, index) in sliceData" :key="value.username">
+                    <td class="text-center hidden-xs hidden-sm">{{ rows * (page-1) + index + 1 }}</td>
                     <td>{{ value.name }}</td>
                     <td>{{ value.username }}</td>
                     <td class="text-right">
@@ -41,6 +41,16 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="text-center" v-if="totalPage != 1">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li v-for="n in totalPage" :class="{ active: n == page }">
+                        <a href="#" @click.prevent="page = n">{{ n }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </template>
 
@@ -53,13 +63,26 @@
         },
         data: function() {
             return {
-                data: null,
+                data: [],
+                page: 1,
+                rows: 15,
                 order: {
                     name: null,
                     username: null,
                     investment: -1
                 }
             }
+        },
+        computed: {
+            totalPage: function() {
+                return Math.ceil(this.data.length / this.rows);
+            },
+            sliceData: function() {
+                let start = (this.page-1) * this.rows;
+                let end = start+this.rows > this.data.length ? this.data.length : start+this.rows;
+                
+                return this.data.slice(start, end);
+            },
         },
         methods: {
             sortBy: function(column) {
