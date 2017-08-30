@@ -25,6 +25,9 @@
                     <div class="panel-heading">J-Coin 투자금액</div>
                     <div class="panel-body">
                         <h5 class="text-center">잔여 코인 : {{ balance }} / 투자 금액 : <strong>{{ investment }}</strong></h5>
+                        <p class="small text-center text-danger"v-if="this.item.company == this.$store.state.user.company">
+                            * 같은회사 투자금 부여는 1코인으로 제한
+                        </p>
                         <div class="slider">
                             <vue-slider ref="slider" v-model.number="investment" :disabled="!sliderEnable" :min="1" :max="max" :dot-size="25" tooltip="false"></vue-slider>
                         </div>
