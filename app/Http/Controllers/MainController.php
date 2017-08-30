@@ -101,7 +101,7 @@ class MainController extends Controller
 
         $item = Item::find($id);
         if (!$item->event_open) {
-            return response()->json(['errors' => '이벤트가 시작되지 않았습니다.'], 401);
+            return response()->json(['errors' => '이벤트가 시작되지 않았습니다.'], 403);
         }
 
         $user = Auth::user();
@@ -130,7 +130,7 @@ class MainController extends Controller
         // 진행 상태 확인
         $settings = Setting::findOrFail(1);
         if ($settings->status != 'result') {
-            return reponse()->json(['errors' => '결과를 집계 중입니다.'], 406);
+            return response()->json(['errors' => '결과를 집계 중입니다.'], 406);
         }
 
         $total = ['normal' => 0, 'expert' => 0];
