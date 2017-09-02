@@ -44,6 +44,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        /*
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => '세션이 만료되었습니다.'], 401);
+            } else {
+                return redirect()->route('login');
+            }
+        }
+        */
         return parent::render($request, $exception);
     }
 
